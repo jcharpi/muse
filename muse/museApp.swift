@@ -11,7 +11,7 @@ import SwiftUI
 struct museApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+          ActionButtonView(size: 200, style: .listen)
         }
     }
 }
