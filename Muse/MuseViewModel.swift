@@ -1,14 +1,7 @@
-//
-//  MuseViewModel.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 12/31/24.
-//
-
 import SwiftUI
 
 @Observable
-class MuseViewModel {
+class MuseViewModel: ObservableObject {
   typealias ButtonType = MuseModel.ButtonType
   typealias ButtonStyle = MuseModel.ButtonStyle
   typealias ButtonData = MuseModel.ButtonData
@@ -16,6 +9,7 @@ class MuseViewModel {
   typealias Listener = MuseModel.Listener
   typealias MusicDisplayData = MuseModel.MusicDisplayData
   
+  var selectedListener: Listener? = nil
   
   let listenerArray: [Listener] = [
     Listener(
@@ -63,7 +57,7 @@ class MuseViewModel {
   var listeners: [Listener] { model.listeners }
   
   // MARK: - Intents
-  func buttonTap(_ listener: Listener) -> () {
+  func buttonTap(_ listener: Listener) {
     model.buttonTap(listener, listener.buttonToShow)
   }
   

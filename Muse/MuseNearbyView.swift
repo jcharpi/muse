@@ -1,61 +1,50 @@
-//
-//  MuseNearbyView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 1/1/25.
-//
-
 import SwiftUI
 
 struct MuseNearbyView: View {
-  @Bindable var viewModel = MuseViewModel()
-  @State private var isModalPresented = false
-
+  @EnvironmentObject var viewModel: MuseViewModel
+  
+  init() {
+    let appearance = UINavigationBarAppearance()
+    appearance.configureWithTransparentBackground()
+    appearance.backgroundColor = Constants.navBarColor
+    appearance.largeTitleTextAttributes = [.foregroundColor: Constants.navBarTextColor]
+    appearance.titleTextAttributes = [.foregroundColor: Constants.navBarTextColor]
+    
+    UINavigationBar.appearance().standardAppearance = appearance
+    UINavigationBar.appearance().compactAppearance = appearance
+  }
+  
   var body: some View {
-    VStack {
-      HeaderView()
-      Spacer()
-      ScrollView {
-        LazyVStack(alignment: .center, spacing: Constants.lazyVStackspacing) {
-          ForEach(viewModel.listeners) { listener in
-            listenerElement(listener)
+    NavigationStack {
+      List(viewModel.listeners) { listener in
+        ListenerView(listener)
+          .onTapGesture {
+            viewModel.selectedListener = listener
           }
-        }
-        .padding()
+          .listRowBackground(Color.clear)
+      }
+      .listStyle(PlainListStyle())
+      .background(Constants.backgroundColor)
+      .navigationTitle("Nearby Listeners")
+      .navigationBarTitleDisplayMode(.large)
+      .sheet(item: $viewModel.selectedListener) { listener in
+        ListenerModalView(listener)
+          .presentationDetents(
+            [.fraction(Constants.sheetFraction)]
+          )
+          .presentationDragIndicator(.visible)
       }
     }
   }
   
-  func listenerElement(_ listener: MuseViewModel.Listener) -> some View {
-    HStack {
-      ListenerView(listener)
-        .contentShape(Rectangle())
-        .onTapGesture { isModalPresented = true }
-        .sheet(isPresented: $isModalPresented) {
-          ListenerModalView(listener)
-            .presentationDetents(
-              [.fraction(Constants.modalPresentationFraction)]
-            )
-            .presentationDragIndicator(.visible)
-        }
-      ButtonView(listener, style: .icon)
-    }
-  }
-  
   private struct Constants {
-    static let lazyVStackspacing: CGFloat = 24.0
-    static let modalPresentationFraction: CGFloat = 0.9
+    static let backgroundColor: Color = Color.black.opacity(0.8)
+    static let sheetFraction: CGFloat = 0.9
+    static let navBarColor: UIColor = .darkGray
+    static let navBarTextColor: UIColor = .white
   }
 }
-
 #Preview {
-  ZStack {
-    // Background
-    Color.black
-      .edgesIgnoringSafeArea(.all)
-      .opacity(0.8)
-    
-    // Foreground
-    MuseNearbyView(viewModel: MuseViewModel())
-  }
+  MuseNearbyView()
+    .environmentObject(MuseViewModel())
 }

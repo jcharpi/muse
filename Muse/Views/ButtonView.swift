@@ -1,14 +1,7 @@
-//
-//  ButtonView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 12/31/24.
-//
-
 import SwiftUI
 
 struct ButtonView: View {
-  @Bindable var viewModel = MuseViewModel()
+  @EnvironmentObject var viewModel: MuseViewModel
   
   private let listener: MuseViewModel.Listener
   private let style: MuseViewModel.ButtonStyle
@@ -26,12 +19,15 @@ struct ButtonView: View {
     let data = viewModel.buttonData(for: type, style: style)
     let colors = viewModel.buttonColors(for: type)
     
-    if let title = data.title {
-      textButton(title, colors)
-    } else if let icon = data.icon {
-      iconButton(icon, colors).onTapGesture {
-        viewModel.buttonTap(listener)
+    Group {
+      if let title = data.title {
+        textButton(title, colors)
+      } else if let icon = data.icon {
+        iconButton(icon, colors)
       }
+    }
+    .onTapGesture {
+      viewModel.buttonTap(listener)
     }
   }
   
@@ -69,20 +65,18 @@ struct ButtonView: View {
 
 #Preview {
   HStack {
-    @Bindable var viewModel = MuseViewModel()
-    
     VStack {
-      ButtonView(viewModel.listeners[0], style: .text)
-      ButtonView(viewModel.listeners[1], style: .text)
-      ButtonView(viewModel.listeners[2], style: .text)
-      
+      ButtonView(MuseViewModel().listeners[0], style: .text)
+      ButtonView(MuseViewModel().listeners[1], style: .text)
+      ButtonView(MuseViewModel().listeners[2], style: .text)
     }
     .padding()
     VStack {
-      ButtonView(viewModel.listeners[0], style: .icon)
-      ButtonView(viewModel.listeners[1], style: .icon)
-      ButtonView(viewModel.listeners[2], style: .icon)
+      ButtonView(MuseViewModel().listeners[0], style: .icon)
+      ButtonView(MuseViewModel().listeners[1], style: .icon)
+      ButtonView(MuseViewModel().listeners[2], style: .icon)
     }
     .padding()
   }
+  .environmentObject(MuseViewModel())
 }

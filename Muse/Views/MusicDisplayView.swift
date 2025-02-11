@@ -1,14 +1,7 @@
-//
-//  MusicDisplayView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 1/1/25.
-//
-
 import SwiftUI
 
 struct MusicDisplayView: View {
-  @Bindable var viewModel = MuseViewModel()
+  @EnvironmentObject var viewModel: MuseViewModel
   
   private let screenWidth = UIScreen.main.bounds.width
   
@@ -61,4 +54,5 @@ struct MusicDisplayView: View {
     Color.black.opacity(0.8).edgesIgnoringSafeArea(.all)
     MusicDisplayView(color: .white)
   }
+  .environmentObject(MuseViewModel())
 }

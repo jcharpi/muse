@@ -1,14 +1,7 @@
-//
-//  ListenerModalView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 1/4/25.
-//
-
 import SwiftUI
 
 struct ListenerModalView: View {
-  @Bindable var viewModel = MuseViewModel()
+  @EnvironmentObject var viewModel: MuseViewModel
   
   let listener: MuseViewModel.Listener
   
@@ -18,18 +11,16 @@ struct ListenerModalView: View {
   
   var body: some View {
     VStack {
-      Group {
-        ListenerView(listener, showIconButton: false, color: .primary)
-          .padding(.top, Constants.topPadding)
-          .padding(.horizontal)
-        
-        MusicDisplayView(color: .primary)
-      }
-      .scaleEffect(Constants.scaleEffect)
+      ListenerView(listener, showIconButton: false, color: .primary)
+        .padding(.top, Constants.topPadding)
+        .padding(.horizontal)
+      
+      MusicDisplayView(color: .primary)
+        .scaleEffect(Constants.scaleEffect)
       
       Spacer()
       
-      if (listener.buttonToShow != .shared) {
+      if listener.buttonToShow != .shared {
         ButtonView(listener, style: .text)
       }
     }
@@ -44,13 +35,14 @@ struct ListenerModalView: View {
 
 #Preview {
   ListenerModalView(
-    MuseViewModel.Listener.init(
-      name: "test",
+    MuseViewModel.Listener(
+      name: "Test",
       listeningTo: .init(
         albumCover: "weathertop",
-        songTitle: "frog",
-        artistName: "test"
+        songTitle: "Frog",
+        artistName: "Test Artist"
       )
     )
   )
+  .environmentObject(MuseViewModel())
 }

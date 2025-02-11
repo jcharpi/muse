@@ -30,5 +30,6 @@ struct MuseHomeView: View {
       .edgesIgnoringSafeArea(.all)
     
     MuseHomeView()
+      .environmentObject(MuseViewModel())
   }
 }

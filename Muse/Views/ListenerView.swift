@@ -1,14 +1,7 @@
-//
-//  ListenerView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 1/4/25.
-//
-
 import SwiftUI
 
 struct ListenerView: View {
-  @Bindable var viewModel = MuseViewModel()
+  @EnvironmentObject var viewModel: MuseViewModel
   
   let listener: MuseViewModel.Listener
   let showIconButton: Bool
@@ -32,17 +25,16 @@ struct ListenerView: View {
         color: color
       )
       .padding(.trailing, Constants.trailingProfilePadding)
-        
+      
       VStack(alignment: .leading, spacing: Constants.vStackSpacing) {
         Text(listener.name)
           .font(.title2)
-          
         Text(viewModel.textToDisplay(listener.buttonToShow))
           .font(.subheadline)
       }
       .fontWeight(.semibold)
       .foregroundStyle(color)
-        
+      
       Spacer()
     }
   }
@@ -96,4 +88,5 @@ struct ListenerView: View {
     }
     .padding()
   }
+  .environmentObject(MuseViewModel())
 }

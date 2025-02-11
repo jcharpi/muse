@@ -1,16 +1,9 @@
-//
-//  MuseModel.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 12/31/24.
-//
-
 import Foundation
 
 struct MuseModel {
   private(set) var listeners: [Listener]
   
-  // MARK: - Access Funcs
+  // MARK: - Access Functions
   mutating func buttonTap(_ listener: Listener, _ type: ButtonType) {
     if let chosenListenerIndex = listeners.firstIndex(
       where: { $0.id == listener.id
@@ -38,8 +31,8 @@ struct MuseModel {
   
   func textToDisplay(_ buttonType: ButtonType) -> String {
     switch buttonType {
-    case .listen: "Recommended you a song"
-    default: "Listening nearby"
+    case .listen: return "Recommended you a song"
+    default: return "Listening nearby"
     }
   }
   
@@ -50,7 +43,6 @@ struct MuseModel {
   }
   
   struct MusicDisplayData {
-    // TODO: - Figure out how to convert fetch to Image in ViewModel
     var albumCover: String
     var songTitle: String
     var artistName: String
@@ -84,5 +76,4 @@ struct MuseModel {
   enum ButtonType {
     case listen, login, logout, share, shared
   }
-  
 }
