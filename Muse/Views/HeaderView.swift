@@ -1,10 +1,3 @@
-//
-//  HeaderView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 1/1/25.
-//
-
 import SwiftUI
 
 struct HeaderView: View {

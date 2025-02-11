@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Muse
-//
-//  Created by Josh Charpentier on 12/31/24.
-//
-
 import SwiftUI
 
 struct MuseHomeView: View {
