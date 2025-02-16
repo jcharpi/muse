@@ -3,12 +3,10 @@ import SwiftUI
 struct ProfileIconView: View {
   private let profileImage: Image
   private let size: CGFloat
-  let color: Color
   
-  init(_ pfp: Image, size: CGFloat, color: Color = .white) {
+  init(_ pfp: Image, size: CGFloat, color: Color = .primary) {
     self.profileImage = pfp
     self.size = size
-    self.color = color
   }
   
   var body: some View {
@@ -18,7 +16,7 @@ struct ProfileIconView: View {
       .clipShape(Circle())
       .background(Circle()
         .stroke(lineWidth: Constants.lineWidth)
-        .foregroundStyle(color))
+        .foregroundStyle(Color.primary))
       .frame(width: size, height: size)
   }
   
@@ -28,11 +26,7 @@ struct ProfileIconView: View {
 }
 
 #Preview {
-  ZStack {
-    Color.black
-      .edgesIgnoringSafeArea(.all)
-    
-    ProfileIconView(Image("joshc28"), size: 100)
-      .padding()
-  }
+  ProfileIconView(Image("joshc28"), size: 100)
+    .padding()
+  
 }

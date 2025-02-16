@@ -11,11 +11,11 @@ struct ListenerModalView: View {
   
   var body: some View {
     VStack {
-      ListenerView(listener, showIconButton: false, color: .primary)
+      ListenerView(listener, showIconButton: false)
         .padding(.top, Constants.topPadding)
         .padding(.horizontal)
       
-      MusicDisplayView(color: .primary)
+      MusicDisplayView(listener)
         .scaleEffect(Constants.scaleEffect)
       
       Spacer()

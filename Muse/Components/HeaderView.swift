@@ -19,13 +19,5 @@ struct HeaderView: View {
 }
 
 #Preview {
-  ZStack {
-    // Background
-    Color.black
-      .edgesIgnoringSafeArea(.all)
-      .opacity(0.8)
-    
-    // Foreground
-    HeaderView()
-  }
+  HeaderView()
 }
