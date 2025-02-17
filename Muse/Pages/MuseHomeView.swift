@@ -12,8 +12,12 @@ struct MuseHomeView: View {
         MuseNearbyView()
       }
     }
-    .tabViewStyle(.tabBarOnly)
+    .tabViewStyle(.automatic)
     .tint(.primary)
+    .fullScreenCover(isPresented: $viewModel.showSignIn) {
+      SignInView()
+        .environmentObject(viewModel)
+    }
   }
   
   var nowPlaying: some View {
@@ -21,7 +25,7 @@ struct MuseHomeView: View {
       HeaderView()
       Spacer()
       Text("Now Playing")
-        .font(.title)
+        .font(.largeTitle)
         .fontWeight(.semibold)
         .foregroundStyle(.primary)
         .frame(maxWidth: .infinity, alignment: .leading)

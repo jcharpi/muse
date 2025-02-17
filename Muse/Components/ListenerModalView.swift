@@ -3,28 +3,28 @@ import SwiftUI
 struct ListenerModalView: View {
   @EnvironmentObject var viewModel: MuseViewModel
   
-  let listener: MuseViewModel.Listener
-  
-  init(_ listener: MuseViewModel.Listener) {
-    self.listener = listener
-  }
-  
   var body: some View {
-    VStack {
-      ListenerView(listener, showIconButton: false)
-        .padding(.top, Constants.topPadding)
-        .padding(.horizontal)
-      
-      MusicDisplayView(listener)
-        .scaleEffect(Constants.scaleEffect)
-      
-      Spacer()
-      
-      if listener.buttonToShow != .shared {
-        ButtonView(listener, style: .text)
+    if let listener = viewModel.selectedListener {
+      VStack {
+        ListenerView(listener, showIconButton: false)
+          .padding(.top, Constants.topPadding)
+          .padding(.horizontal)
+        
+        MusicDisplayView(listener)
+          .scaleEffect(Constants.scaleEffect)
+        
+        Spacer()
+
+        if listener.buttonToShow != .shared {
+          ButtonView(listener, style: .text)
+        }
+        
+        Spacer()
       }
+      .padding()
+    } else {
+      Text("No listener selected")
     }
-    .padding()
   }
   
   private struct Constants {
@@ -34,15 +34,9 @@ struct ListenerModalView: View {
 }
 
 #Preview {
-  ListenerModalView(
-    MuseViewModel.Listener(
-      name: "Test",
-      listeningTo: .init(
-        albumCover: "weathertop",
-        songTitle: "Frog",
-        artistName: "Test Artist"
-      )
-    )
-  )
-  .environmentObject(MuseViewModel())
+  let viewModel = MuseViewModel()
+  
+  viewModel.selectedListener = viewModel.listeners[2]
+  return ListenerModalView()
+    .environmentObject(viewModel)
 }

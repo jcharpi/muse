@@ -6,13 +6,8 @@ struct MuseApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ZStack {
-        Constants.backgroundColor
-          .edgesIgnoringSafeArea(.all)
-        
-        MuseNearbyView()
-      }
-      .environmentObject(viewModel)
+      MuseHomeView()
+        .environmentObject(viewModel)
     }
   }
   

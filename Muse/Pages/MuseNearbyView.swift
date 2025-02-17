@@ -20,11 +20,8 @@ struct MuseNearbyView: View {
       .listRowSpacing(Constants.rowSpacing)
       .listStyle(PlainListStyle())
       .navigationTitle("Nearby Listeners")
-      .sheet(item: $viewModel.selectedListener) { listener in
-        ListenerModalView(listener)
-          .presentationDetents(
-            [.fraction(Constants.sheetFraction)]
-          )
+      .sheet(item: $viewModel.selectedListener) { _ in
+        ListenerModalView()
           .presentationDragIndicator(.visible)
       }
     }

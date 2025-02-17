@@ -10,6 +10,7 @@ class MuseViewModel: ObservableObject {
   typealias MusicDisplayData = MuseModel.MusicDisplayData
   
   var selectedListener: Listener? = nil
+  var showSignIn: Bool = true
   
   let listenerArray: [Listener] = [
     Listener(
@@ -61,6 +62,10 @@ class MuseViewModel: ObservableObject {
   // MARK: - Intents
   func buttonTap(_ listener: Listener) {
     model.buttonTap(listener, listener.buttonToShow)
+    
+    if selectedListener?.id == listener.id {
+      selectedListener = model.listeners.first(where: { $0.id == listener.id })
+    }
   }
   
   func textToDisplay(_ buttonType: ButtonType) -> String {
