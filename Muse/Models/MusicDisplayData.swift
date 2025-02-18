@@ -5,7 +5,3 @@ struct MusicDisplayData {
   let songTitle: String
   let artistName: String
 }
-
-protocol MusicDisplayable {
-  var listeningTo: MusicDisplayData { get }
-}

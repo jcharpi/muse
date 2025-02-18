@@ -1,8 +1,8 @@
 import Foundation
 
-struct Listener: Identifiable, MusicDisplayable {
-  let id: String
-  let name: String
+struct Listener: IdentifiableEntity, MusicDisplayable {
+  var id: String
+  var name: String
   var listeningTo: MusicDisplayData
   var recommendedSong: MusicDisplayData?
   var recommendedMe: Bool = false

@@ -1,8 +1,8 @@
 import Foundation
 
-struct User: Identifiable, MusicDisplayable {
-  let id: String
-  let name: String
+struct User: IdentifiableEntity, MusicDisplayable {
+  var id: String
+  var name: String
   var listeningTo: MusicDisplayData
 
   init(name: String, listeningTo: MusicDisplayData) {
