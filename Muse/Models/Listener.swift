@@ -1,0 +1,33 @@
+import Foundation
+
+struct Listener: Identifiable, MusicDisplayable {
+  let id: String
+  let name: String
+  var listeningTo: MusicDisplayData
+  var recommendedSong: MusicDisplayData?
+  var recommendedMe: Bool = false
+  var sentRecommendation: Bool = false
+    
+  init(name: String,
+       listeningTo: MusicDisplayData,
+       recommendedSong: MusicDisplayData? = nil,
+       recommendedMe: Bool = false,
+       sentRecommendation: Bool = false) {
+    self.name = name
+    self.listeningTo = listeningTo
+    self.recommendedSong = recommendedSong
+    self.recommendedMe = recommendedMe
+    self.sentRecommendation = sentRecommendation
+    self.id = name
+  }
+    
+  var buttonToShow: ButtonType {
+    if recommendedMe {
+      return .listen
+    } else if sentRecommendation {
+      return .shared
+    } else {
+      return .share
+    }
+  }
+}

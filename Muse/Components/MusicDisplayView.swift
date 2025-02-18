@@ -1,18 +1,17 @@
 import SwiftUI
 
 struct MusicDisplayView: View {
-  @EnvironmentObject var viewModel: MuseViewModel
-  let listener: MuseViewModel.Listener
-  
-  init(_ listener: MuseViewModel.Listener) {
-    self.listener = listener
+  let musicListener: any MusicDisplayable
+    
+  init(_ musicListener: any MusicDisplayable) {
+    self.musicListener = musicListener
   }
   
   private let screenWidth = UIScreen.main.bounds.width
     
   var body: some View {
     VStack(alignment: .leading) {
-      Image("Weatherman") //TODO: Make dynamic
+      Image(musicListener.listeningTo.albumCover) //TODO: Make dynamic
         .resizable()
         .padding(.horizontal, Constants.horizontalPadding)
         .frame(width: screenWidth, height: screenWidth)
@@ -24,12 +23,12 @@ struct MusicDisplayView: View {
   @ViewBuilder
   var songDetails: some View {
     Group {
-      Text(listener.listeningTo.songTitle)
+      Text(musicListener.listeningTo.songTitle)
         .font(.title2)
         .fontWeight(.medium)
         .padding(.top, Constants.songTitleTopPadding)
         .padding(.bottom, Constants.songTitleBottomPadding)
-      Text(listener.listeningTo.artistName)
+      Text(musicListener.listeningTo.artistName)
         .font(.title3)
         .fontWeight(.regular)
         .opacity(Constants.opacity)
@@ -48,14 +47,15 @@ struct MusicDisplayView: View {
 }
 
 #Preview {
-  MusicDisplayView(MuseViewModel.Listener(
-    name: "Test",
-    listeningTo: .init(
-      albumCover: "weathertop",
-      songTitle: "Frog",
-      artistName: "Test Artist"
+  MusicDisplayView(
+    Listener(
+      name: "Test",
+      listeningTo: .init(
+        albumCover: "Weatherman",
+        songTitle: "Frog",
+        artistName: "Test Artist"
+      )
     )
-  )
   )
   .environmentObject(MuseViewModel())
 }

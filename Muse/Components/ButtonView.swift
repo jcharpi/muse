@@ -3,12 +3,12 @@ import SwiftUI
 struct ButtonView: View {
   @EnvironmentObject var viewModel: MuseViewModel
   
-  private let listener: MuseViewModel.Listener
-  private let style: MuseViewModel.ButtonStyle
+  private let listener: Listener
+  private let style: ButtonStyle
   
   init(
-    _ listener: MuseViewModel.Listener,
-    style: MuseViewModel.ButtonStyle
+    _ listener: Listener,
+    style: ButtonStyle
   ) {
     self.listener = listener
     self.style = style

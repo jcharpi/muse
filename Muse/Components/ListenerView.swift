@@ -3,11 +3,11 @@ import SwiftUI
 struct ListenerView: View {
   @EnvironmentObject var viewModel: MuseViewModel
   
-  let listener: MuseViewModel.Listener
+  let listener: Listener
   let showIconButton: Bool
   
   init(
-    _ listener: MuseViewModel.Listener,
+    _ listener: Listener,
     showIconButton: Bool = true  ) {
       self.listener = listener
       self.showIconButton = showIconButton
@@ -47,7 +47,7 @@ struct ListenerView: View {
 #Preview {
   VStack(spacing: 16) {
     ListenerView(
-      MuseViewModel.Listener(
+      Listener(
         name: "Josh",
         listeningTo: .init(
           albumCover: "weathertop",
@@ -57,7 +57,7 @@ struct ListenerView: View {
       )
     )
     ListenerView(
-      MuseViewModel.Listener(
+      Listener(
         name: "Josh",
         listeningTo: .init(
           albumCover: "weathertop",
@@ -68,7 +68,7 @@ struct ListenerView: View {
       )
     )
     ListenerView(
-      MuseViewModel.Listener(
+      Listener(
         name: "Josh",
         listeningTo: .init(
           albumCover: "weathertop",
