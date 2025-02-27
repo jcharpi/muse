@@ -42,6 +42,10 @@ struct MusicDisplayView: View {
         Image(data.albumCover)
           .resizable()
           .aspectRatio(contentMode: .fit)
+          .overlay(
+            Rectangle()
+              .stroke(Color.primary, lineWidth: Constants.albumStroke)
+          )
           .padding(.horizontal, Constants.horizontalPadding)
           .padding(.vertical, Constants.verticalPadding)
                 
@@ -74,6 +78,7 @@ struct MusicDisplayView: View {
       static let songTitleTopPadding: CGFloat = 8
       static let songTitleBottomPadding: CGFloat = 4
       static let songArtistBottomPadding: CGFloat = 40
+      static let albumStroke: CGFloat = 2
       static let opacity: CGFloat = 0.8
       static let screenWidth = UIScreen.main.bounds.width * 0.98
     }

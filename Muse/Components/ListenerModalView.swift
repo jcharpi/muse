@@ -29,6 +29,8 @@ struct ListenerModalView: View {
             .fontWeight(.medium)
             .frame(minHeight: Constants.minHeight)
         }
+        
+        Spacer()
       }
       .padding()
     } else {
