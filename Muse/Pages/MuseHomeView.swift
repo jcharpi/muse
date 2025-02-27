@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MuseHomeView: View {
   @EnvironmentObject var viewModel: MuseViewModel
+  @State private var showHeaderAlert = false
 
   var body: some View {
     TabView {
@@ -22,7 +23,18 @@ struct MuseHomeView: View {
   
   var nowPlaying: some View {
     VStack {
-      HeaderView()
+      Button {
+        showHeaderAlert = true
+      } label: {
+        HeaderView()
+      }
+      .alert("Logout", isPresented: $showHeaderAlert) {
+        Button("Cancel", role: .cancel) { }
+        Button("Logout", role: .destructive) {
+          viewModel.showSignIn = true
+        }
+      }
+      
       Spacer()
       MusicDisplayView(viewModel.user)
       Spacer()

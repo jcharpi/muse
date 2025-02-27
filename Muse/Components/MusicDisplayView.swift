@@ -77,7 +77,7 @@ struct MusicDisplayView: View {
       static let verticalPadding: CGFloat = 8
       static let songTitleTopPadding: CGFloat = 8
       static let songTitleBottomPadding: CGFloat = 4
-      static let songArtistBottomPadding: CGFloat = 40
+      static let songArtistBottomPadding: CGFloat = 60
       static let albumStroke: CGFloat = 2
       static let opacity: CGFloat = 0.8
       static let screenWidth = UIScreen.main.bounds.width * 0.98
