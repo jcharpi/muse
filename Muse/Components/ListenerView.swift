@@ -16,7 +16,7 @@ struct ListenerView: View {
   var body: some View {
     HStack {
       ProfileIconView(
-        Image("joshc28"),
+        Image(listener.profilePic),
         size: Constants.profileIconSize,
         color: Constants.primaryColor
       )
@@ -39,7 +39,7 @@ struct ListenerView: View {
   private struct Constants {
     static let primaryColor: Color = Color.primary
     static let vStackSpacing: CGFloat = 8.0
-    static let profileIconSize: CGFloat = 72.0
+    static let profileIconSize: CGFloat = 56.0
     static let trailingProfilePadding: CGFloat = 4.0
   }
 }
@@ -49,27 +49,30 @@ struct ListenerView: View {
     ListenerView(
       Listener(
         name: "Josh",
+        profilePic: "josh",
         listeningTo: .init(
-          albumCover: "weathertop",
-          songTitle: "Frog",
-          artistName: "Jibby Jab"
+          albumCover: "cover",
+          songTitle: "title",
+          artistName: "artist"
         )
       )
     )
     ListenerView(
       Listener(
-        name: "Josh",
+        name: "Maya",
+        profilePic: "maya",
         listeningTo: .init(
-          albumCover: "weathertop",
-          songTitle: "Frog",
-          artistName: "Jibby Jab"
+          albumCover: "cover",
+          songTitle: "title",
+          artistName: "artist"
         ),
         recommendedMe: true
       )
     )
     ListenerView(
       Listener(
-        name: "Josh",
+        name: "Emily",
+        profilePic: "emily",
         listeningTo: .init(
           albumCover: "weathertop",
           songTitle: "Frog",

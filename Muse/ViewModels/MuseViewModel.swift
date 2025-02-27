@@ -9,23 +9,33 @@ class MuseViewModel: ObservableObject {
     
   private let listenerArray: [Listener] = [
     Listener(name: "Maya",
-             listeningTo: MusicDisplayData(albumCover: "Weatherman",
-                                           songTitle: "Easy on the Eyes",
-                                           artistName: "Beautiful"),
+             profilePic: "maya",
+             listeningTo: MusicDisplayData(albumCover: "weatherman",
+                                           songTitle: "Amsterdam",
+                                           artistName: "Gregory Alan Isakov"),
              sentRecommendation: true),
     Listener(name: "Diego",
-             listeningTo: MusicDisplayData(albumCover: "Weatherman",
-                                           songTitle: "Goated on the Tech Hoe",
-                                           artistName: "Epcot"),
-             recommendedMe: true),
-    Listener(name: "Nelly",
-             listeningTo: MusicDisplayData(albumCover: "Weatherman",
-                                           songTitle: "Mom's Spagooti",
-                                           artistName: "Locked In")),
+             profilePic: "diego",
+             listeningTo: MusicDisplayData(albumCover: "silkSonic",
+                                           songTitle: "Skate",
+                                           artistName: "Silk Sonic"),
+             recommendedSong: MusicDisplayData(
+              albumCover: "appaloosaBones",
+              songTitle: "Silver Bell",
+              artistName: "Gregory Alan Isakov"
+             ),
+             recommendedMe: true
+            ),
+    Listener(name: "Cayden",
+             profilePic: "cayden",
+             listeningTo: MusicDisplayData(albumCover: "billieEilish",
+                                           songTitle: "CHIHIRO",
+                                           artistName: "Billie Eilish")),
     Listener(name: "Emily",
-             listeningTo: MusicDisplayData(albumCover: "Weatherman",
-                                           songTitle: "Emiline",
-                                           artistName: "GLOOstick"))
+             profilePic: "emily",
+             listeningTo: MusicDisplayData(albumCover: "maggieRogers",
+                                           songTitle: "Alaska",
+                                           artistName: "Maggie Rogers"))
   ]
     
   private var model: MuseModel

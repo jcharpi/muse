@@ -4,7 +4,7 @@ struct HeaderView: View {
   var body: some View {
     HStack {
       Spacer()
-      ProfileIconView(Image("joshc28"), size: Constants.profileIconSize)
+      ProfileIconView(Image("josh"), size: Constants.profileIconSize)
         .padding(.trailing, Constants.trailingPadding)
         .padding(.leading, Constants.leadingPadding)
     }

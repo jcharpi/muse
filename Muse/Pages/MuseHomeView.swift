@@ -24,12 +24,6 @@ struct MuseHomeView: View {
     VStack {
       HeaderView()
       Spacer()
-      Text("Now Playing")
-        .font(.largeTitle)
-        .fontWeight(.semibold)
-        .foregroundStyle(.primary)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Constants.horizontalPadding)
       MusicDisplayView(viewModel.user)
       Spacer()
       // TODO: Media controls

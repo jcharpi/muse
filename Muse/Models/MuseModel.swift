@@ -5,9 +5,9 @@ struct MuseModel {
   private(set) var user: User
     
   init(listeners: [Listener],
-       user: User = User(name: "User", listeningTo: MusicDisplayData(albumCover: "Weatherman",
-                                                                     songTitle: "Bumpin' Song",
-                                                                     artistName: "Artist"))) {
+       user: User = User(name: "Josh", profilePic: "josh", listeningTo: MusicDisplayData(albumCover: "unrealUnearth",
+                                                                                         songTitle: "Francesca",
+                                                                                         artistName: "Hozier"))) {
     self.listeners = listeners
     self.user = user
   }
