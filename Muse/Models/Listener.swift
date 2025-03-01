@@ -5,27 +5,24 @@ struct Listener: IdentifiableEntity, MusicDisplayable {
   var name: String
   var profilePic: String
   var listeningTo: MusicDisplayData
-  var recommendedSong: MusicDisplayData?
-  var recommendedMe: Bool = false
+  var recommendedMe: MusicDisplayData?
   var sentRecommendation: Bool = false
     
   init(name: String,
        profilePic: String,
        listeningTo: MusicDisplayData,
-       recommendedSong: MusicDisplayData? = nil,
-       recommendedMe: Bool = false,
+       recommendedMe: MusicDisplayData? = nil,
        sentRecommendation: Bool = false) {
     self.name = name
     self.profilePic = profilePic
     self.listeningTo = listeningTo
-    self.recommendedSong = recommendedSong
     self.recommendedMe = recommendedMe
     self.sentRecommendation = sentRecommendation
     self.id = name
   }
     
   var buttonToShow: ButtonType {
-    if recommendedMe {
+    if recommendedMe != nil {
       return .listen
     } else if sentRecommendation {
       return .shared

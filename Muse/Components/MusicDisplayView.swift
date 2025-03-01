@@ -9,10 +9,10 @@ struct MusicDisplayView: View {
   
   var body: some View {
     if let listener = musicListener as? Listener {
-      if let recommendedSong = listener.recommendedSong {
+      if let recommendedMe = listener.recommendedMe {
         // Listener with recommended song
         TabView {
-          SongTabView(data: recommendedSong, headerTitle: "Recommended Song")
+          SongTabView(data: recommendedMe, headerTitle: "Recommended Song")
           SongTabView(data: listener.listeningTo, headerTitle: "Now Listening")
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
@@ -95,7 +95,7 @@ struct MusicDisplayView: View {
         songTitle: "Amsterdam",
         artistName: "Gregory Alan Isakov"
       ),
-      recommendedSong: .init(
+      recommendedMe: .init(
         albumCover: "unrealUnearth",
         songTitle: "Eat Your Young",
         artistName: "Hozier"

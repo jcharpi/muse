@@ -23,6 +23,7 @@ struct MuseModel {
       listeners[index].sentRecommendation = true
     case .listen:
       print("Open Spotify")
+      listeners[index].recommendedMe = nil
     default:
       print("Unhandled button type")
     }

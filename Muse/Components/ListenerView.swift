@@ -65,8 +65,7 @@ struct ListenerView: View {
           albumCover: "cover",
           songTitle: "title",
           artistName: "artist"
-        ),
-        recommendedMe: true
+        )
       )
     )
     ListenerView(

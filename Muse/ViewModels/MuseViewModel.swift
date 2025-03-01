@@ -19,12 +19,11 @@ class MuseViewModel: ObservableObject {
              listeningTo: MusicDisplayData(albumCover: "silkSonic",
                                            songTitle: "Skate",
                                            artistName: "Silk Sonic"),
-             recommendedSong: MusicDisplayData(
+             recommendedMe: MusicDisplayData(
               albumCover: "appaloosaBones",
               songTitle: "Silver Bell",
               artistName: "Gregory Alan Isakov"
-             ),
-             recommendedMe: true
+             )
             ),
     Listener(name: "Cayden",
              profilePic: "cayden",
