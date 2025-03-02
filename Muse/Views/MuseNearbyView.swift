@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct MuseNearbyView: View {
-  @EnvironmentObject var viewModel: MuseViewModel
-  
+  @Environment(MuseViewModel.self) private var viewModel
+  @State private var selectedListener: Listener?  // Local state mirror
+    
   var body: some View {
     NavigationStack {
       List(viewModel.listeners) { listener in
         HStack {
           ListenerView(listener)
             .onTapGesture {
-              viewModel.selectedListener = listener
+              selectedListener = listener  // Update local state
+              viewModel.selectedListener = listener  // Sync with VM
             }
           Spacer()
           ButtonView(listener, style: .icon)
@@ -18,22 +20,21 @@ struct MuseNearbyView: View {
         .listRowSeparator(.hidden)
       }
       .listRowSpacing(Constants.rowSpacing)
-      .listStyle(PlainListStyle())
       .navigationTitle("Nearby Listeners")
-      .sheet(item: $viewModel.selectedListener) { _ in
+      .sheet(item: $selectedListener) { _ in  // Use local state binding
         ListenerModalView()
+          .environment(viewModel)
           .presentationDragIndicator(.visible)
       }
     }
   }
-  
+    
   private struct Constants {
-    static let sheetFraction: CGFloat = 0.9
     static let rowSpacing: CGFloat = 8
   }
 }
 
 #Preview {
   MuseNearbyView()
-    .environmentObject(MuseViewModel())
+    .environment(MuseViewModel())
 }

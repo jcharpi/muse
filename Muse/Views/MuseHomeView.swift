@@ -1,26 +1,28 @@
 import SwiftUI
 
 struct MuseHomeView: View {
-  @EnvironmentObject var viewModel: MuseViewModel
+  @Environment(MuseViewModel.self) private var viewModel
   @State private var showHeaderAlert = false
+  @State private var showSignIn = false  // New state variable
 
   var body: some View {
     TabView {
-      Tab("Now Playing", systemImage: "play.fill") {
-        nowPlaying
-      }
-      Tab("Nearby", systemImage: "wave.3.up") {
-        MuseNearbyView()
-      }
+      nowPlaying
+        .tabItem {
+          Label("Now Playing", systemImage: "play.fill")
+        }
+            
+      MuseNearbyView()
+        .tabItem {
+          Label("Nearby", systemImage: "wave.3.up")
+        }
     }
-    .tabViewStyle(.automatic)
     .tint(.primary)
-    .fullScreenCover(isPresented: $viewModel.showSignIn) {
-      SignInView()
-        .environmentObject(viewModel)
+    .fullScreenCover(isPresented: $showSignIn) {
+      SignInView(showSignIn: $showSignIn)
     }
   }
-  
+    
   var nowPlaying: some View {
     VStack {
       Button {
@@ -31,24 +33,20 @@ struct MuseHomeView: View {
       .alert("Logout", isPresented: $showHeaderAlert) {
         Button("Cancel", role: .cancel) { }
         Button("Logout", role: .destructive) {
-          viewModel.showSignIn = true
+          showSignIn = true  // Update local state
         }
       }
-      
+            
       Spacer()
-      MusicDisplayView(viewModel.user)
+      MusicDisplayView(user: viewModel.user)
       Spacer()
       // TODO: Media controls
       Spacer()
     }
   }
-  
-  private struct Constants {
-    static let horizontalPadding: CGFloat = 16
-  }
 }
 
 #Preview {
   MuseHomeView()
-    .environmentObject(MuseViewModel())
+    .environment(MuseViewModel())
 }

@@ -1,24 +1,21 @@
 import SwiftUI
 
 struct ButtonView: View {
-  @EnvironmentObject var viewModel: MuseViewModel
-  
+  @Environment(MuseViewModel.self) private var viewModel
+    
   private let listener: Listener
   private let style: ButtonStyle
-  
-  init(
-    _ listener: Listener,
-    style: ButtonStyle
-  ) {
+    
+  init(_ listener: Listener, style: ButtonStyle) {
     self.listener = listener
     self.style = style
   }
-  
+    
   var body: some View {
     let type = listener.buttonToShow
     let data = viewModel.buttonData(for: type, style: style)
     let colors = viewModel.buttonColors(for: type)
-    
+        
     Group {
       if let title = data.title {
         textButton(title, colors)
@@ -30,7 +27,7 @@ struct ButtonView: View {
       viewModel.buttonTap(listener)
     }
   }
-  
+    
   private func textButton(_ title: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Text(title)
       .font(Constants.titleFontSize)
@@ -41,18 +38,20 @@ struct ButtonView: View {
       .background(colors.primaryColor)
       .cornerRadius(Constants.cornerRadius)
   }
-  
+    
   private func iconButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Image(systemName: icon)
       .font(Constants.iconFontSize)
       .fontWeight(.semibold)
       .foregroundStyle(colors.primaryColor)
       .padding()
-      .background(Circle()
-        .stroke(lineWidth: Constants.iconCircleStrokeWidth)
-        .foregroundStyle(colors.primaryColor))
+      .background(
+        Circle()
+          .stroke(lineWidth: Constants.iconCircleStrokeWidth)
+          .foregroundStyle(colors.primaryColor)
+      )
   }
-  
+    
   private struct Constants {
     static let verticalPadding: CGFloat = 8
     static let horizontalPadding: CGFloat = 24
@@ -64,19 +63,22 @@ struct ButtonView: View {
 }
 
 #Preview {
-  HStack {
+  let testListeners = TestData.testListeners
+    
+  return HStack {
     VStack {
-      ButtonView(MuseViewModel().listeners[0], style: .text)
-      ButtonView(MuseViewModel().listeners[1], style: .text)
-      ButtonView(MuseViewModel().listeners[2], style: .text)
+      ButtonView(testListeners[0], style: .text)
+      ButtonView(testListeners[1], style: .text)
+      ButtonView(testListeners[2], style: .text)
     }
     .padding()
+        
     VStack {
-      ButtonView(MuseViewModel().listeners[0], style: .icon)
-      ButtonView(MuseViewModel().listeners[1], style: .icon)
-      ButtonView(MuseViewModel().listeners[2], style: .icon)
+      ButtonView(testListeners[0], style: .icon)
+      ButtonView(testListeners[1], style: .icon)
+      ButtonView(testListeners[2], style: .icon)
     }
     .padding()
   }
-  .environmentObject(MuseViewModel())
+  .environment(MuseViewModel())
 }

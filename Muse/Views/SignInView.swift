@@ -1,28 +1,29 @@
 import SwiftUI
 
 struct SignInView: View {
-  @EnvironmentObject var viewModel: MuseViewModel
-  
+  @Binding var showSignIn: Bool
+  @Environment(\.dismiss) private var dismiss
+    
   var body: some View {
     VStack(spacing: Constants.vStackSpacing) {
       Spacer()
-      
+            
       Text("Discover the Music Around You")
         .font(.largeTitle)
         .fontWeight(.bold)
         .multilineTextAlignment(.center)
         .padding(.horizontal)
-      
+            
       Text(
-        "Sign in with Spotify to explore and share what your listening to with those nearby."
+        "Sign in with Spotify to explore and share what you're listening to with those nearby."
       )
       .font(.body)
       .multilineTextAlignment(.center)
       .foregroundStyle(.secondary)
       .padding(.horizontal)
-      
+            
       Spacer()
-      
+            
       Button(action: signInWithSpotify) {
         HStack {
           Image(systemName: "music.note")
@@ -35,24 +36,26 @@ struct SignInView: View {
         .foregroundColor(.black)
         .cornerRadius(Constants.cornerRadius)
       }
+            
+      Spacer()
     }
     .padding()
   }
-  
-  public struct Constants {
+    
+  private func signInWithSpotify() {
+    AuthManager.shared.login()
+    showSignIn = false
+    dismiss()
+  }
+    
+  private struct Constants {
     static let verticalPadding: CGFloat = 12
     static let horizontalPadding: CGFloat = 24
     static let cornerRadius: CGFloat = 20
     static let vStackSpacing: CGFloat = 24
   }
-  
-  func signInWithSpotify() {
-    // TODO: Sign in with spotify
-    viewModel.showSignIn = false
-  }
 }
 
 #Preview {
-  SignInView()
-    .environmentObject(MuseViewModel())
+  SignInView(showSignIn: .constant(true))
 }
