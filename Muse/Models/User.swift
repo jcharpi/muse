@@ -1,15 +1,20 @@
-import Foundation
-
-struct User: IdentifiableEntity, MusicDisplayable {
-  var id: String
-  var name: String
-  var profilePic: String
-  var listeningTo: MusicDisplayData
-
-  init(name: String, profilePic: String, listeningTo: MusicDisplayData) {
-    self.name = name
-    self.profilePic = profilePic
+struct User: SpotifyAccount, MusicDisplayable {
+  let id: String
+  let displayName: String
+  let images: [SpotifyImage]
+  // user playback state (nil = inactive)
+  var listeningTo: SpotifyTrack?
+    
+  // Controlled construction for partial state simulation
+  public init(
+    id: String,
+    displayName: String,
+    images: [SpotifyImage],
+    listeningTo: SpotifyTrack? = nil
+  ) {
+    self.id = id
+    self.displayName = displayName
+    self.images = images
     self.listeningTo = listeningTo
-    self.id = name
   }
 }

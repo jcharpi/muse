@@ -4,24 +4,32 @@ struct ListenerModalView: View {
   @Environment(MuseViewModel.self) private var viewModel
     
   var body: some View {
+    // Check if a listener is selected; if not, display a fallback message.
     if let listener = viewModel.selectedListener {
       VStack {
         Spacer()
                 
-        ListenerView(listener, showIconButton: false)
-          .padding(.top, Constants.topPadding)
+        // Display listener information without an interactive icon.
+        ListenerView(listener)
+          .padding(
+            .top,
+            Constants.topPadding
+          )
           .padding(.horizontal)
                 
         Spacer()
                 
+        // Display music-related content for the selected listener.
         MusicDisplayView(listener: listener)
-          .scaleEffect(Constants.scaleEffect)
                 
         Spacer()
 
+        // Conditionally show a button or a confirmation message based on the listener's state.
         if listener.buttonToShow != .shared {
           ButtonView(listener, style: .text)
-            .frame(minHeight: Constants.minHeight)
+            .frame(
+              minHeight: Constants.minHeight
+            )
         } else {
           Text("You sent \(listener.displayName) a recommendation!")
             .foregroundStyle(.green)
@@ -39,9 +47,8 @@ struct ListenerModalView: View {
   }
     
   private struct Constants {
-    static let minHeight: CGFloat = 50.0
-    static let topPadding: CGFloat = 8.0
-    static let scaleEffect: CGFloat = 0.9
+    static let minHeight: CGFloat = 50.0 // Minimum height for button or text area.
+    static let topPadding: CGFloat = 8.0 // Top padding for the listener view.
   }
 }
 

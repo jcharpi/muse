@@ -1,35 +1,41 @@
 import SwiftUI
 
 struct SongTabView: View {
-  let track: SpotifyTrack?  // Made optional
+  // Optional track accommodates scenarios where user isn't actively listening to a song
+  let track: SpotifyTrack?
+  // Provides context-specific titling for the view.
   let headerTitle: String
     
   var body: some View {
     HStack {
-      Spacer()
       VStack(alignment: .leading) {
+        // Separates the title from the visual content.
         headerView
+        
+        // Leverages asynchronous image loading with a graceful fallback.
         albumArtView
                 
-        // Only show track info if track exists
+        // Conditional rendering to ensure UI consistency when track data is missing.
         if let track = track {
           trackInfoView(for: track)
         }
       }
       .padding(.horizontal, Constants.horizontalPadding)
-      Spacer()
     }
   }
     
   // MARK: - Components
+  
+  // Flexible header, adapting to various container widths.
   private var headerView: some View {
     Text(headerTitle)
-      .font(.largeTitle)
+      .font(.title)
       .fontWeight(.semibold)
       .foregroundStyle(.primary)
       .frame(maxWidth: .infinity, alignment: .leading)
   }
     
+  // AsyncImage is used for remote album art; a fallback ensures visual stability.
   private var albumArtView: some View {
     AsyncImage(url: track?.album.images.first?.url) { phase in
       switch phase {
@@ -44,11 +50,13 @@ struct SongTabView: View {
     .aspectRatio(Constants.aspectRatio, contentMode: .fit)
     .frame(maxWidth: UIScreen.main.bounds.width)
     .overlay(
+      // An overlay stroke creates a consistent framing for the album art.
       Rectangle()
         .stroke(Color.primary, lineWidth: Constants.albumStroke)
     )
   }
     
+  // Provides a fallback visual element to maintain layout integrity.
   private var fallbackAlbumArt: some View {
     Image(systemName: "music.note")
       .resizable()
@@ -56,6 +64,7 @@ struct SongTabView: View {
       .padding()
   }
     
+  // Consolidates track details into a clean presentation, merging multiple artist names.
   private func trackInfoView(for track: SpotifyTrack) -> some View {
     VStack(alignment: .leading) {
       Text(track.name)
@@ -70,6 +79,7 @@ struct SongTabView: View {
   }
     
   // MARK: - Constants
+  // Centralizes layout metrics for consistency and easier future adjustments.
   private struct Constants {
     static let aspectRatio: CGFloat = 1
     static let horizontalPadding: CGFloat = 16
@@ -79,25 +89,25 @@ struct SongTabView: View {
   }
 }
 
-// MARK: - Preview
-#Preview {
+// MARK: - Previews
+// Previews simulate different data conditions to verify component behavior.
+#Preview("Listener with album art") {
   SongTabView(
-    track: nil,  // Nil track test case
-    headerTitle: "No Track Available"
+    track: TestData.testListeners[1].listeningTo,
+    headerTitle: "Now Listening"
   )
 }
 
-#Preview {
+#Preview("User without album art") {
   SongTabView(
-    track: SpotifyTrack(
-      uri: "spotify:track:preview123",
-      name: "Sample Track",
-      artists: [
-        SpotifyArtist(id: "artist1", name: "Sample Artist 1"),
-        SpotifyArtist(id: "artist2", name: "Sample Artist 2")
-      ],
-      album: SpotifyAlbum(images: [])
-    ),
-    headerTitle: "Preview Track"
+    track: TestData.testUser.listeningTo,
+    headerTitle: "Now Playing"
+  )
+}
+
+#Preview("No track available") {
+  SongTabView(
+    track: nil,
+    headerTitle: "No Track Available"
   )
 }

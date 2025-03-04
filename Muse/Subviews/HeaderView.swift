@@ -6,7 +6,9 @@ struct HeaderView: View {
   var body: some View {
     HStack {
       Spacer()
+      
       ProfileIconView(
+        // Gracefully handles optional nested image URL
         imageUrl: viewModel.user.images.first?.url,
         size: Constants.profileIconSize
       )
@@ -23,6 +25,7 @@ struct HeaderView: View {
   }
 }
 
+// Configures preview with mock service layer
 #Preview {
   let model = MuseModel(musicService: MockMusicService())
   model.user = TestData.testUser

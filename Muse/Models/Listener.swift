@@ -1,24 +1,30 @@
 import Foundation
 
-struct Listener: IdentifiableEntity, MusicDisplayable {
-  var id: String
-  var name: String
-  var profilePic: String
-  var listeningTo: MusicDisplayData
-  var recommendedMe: MusicDisplayData?
-  var sentRecommendation: Bool = false
+struct Listener: SpotifyAccount, MusicDisplayable {
+  let id: String
+  let displayName: String
+  let images: [SpotifyImage]
+  var listeningTo: SpotifyTrack?
+  var recommendedMe: SpotifyTrack?
+  var sentRecommendation: Bool
     
-  init(name: String,
-       profilePic: String,
-       listeningTo: MusicDisplayData,
-       recommendedMe: MusicDisplayData? = nil,
-       sentRecommendation: Bool = false) {
-    self.name = name
-    self.profilePic = profilePic
+  // Public initializer for testing and previews
+  public init(
+    id: String,
+    displayName: String,
+    images: [SpotifyImage],
+    listeningTo: SpotifyTrack? = nil,
+    /// Sent me a recommendation
+    recommendedMe: SpotifyTrack? = nil,
+    /// Sent them a recommendation
+    sentRecommendation: Bool = false
+  ) {
+    self.id = id
+    self.displayName = displayName
+    self.images = images
     self.listeningTo = listeningTo
     self.recommendedMe = recommendedMe
     self.sentRecommendation = sentRecommendation
-    self.id = name
   }
     
   var buttonToShow: ButtonType {

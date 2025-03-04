@@ -1,52 +1,76 @@
 import SwiftUI
 
+/// The main interface for the Muse app, managing tab navigation and sign-in flow.
 struct MuseHomeView: View {
+  // Injects a view model from the environment to supply user data and business logic.
   @Environment(MuseViewModel.self) private var viewModel
+  
+  // Controls the display of the logout alert when interacting with the header.
   @State private var showHeaderAlert = false
-  @State private var showSignIn = false  // New state variable
+  
+  // Flags whether the sign-in screen should be presented (typically after a logout).
+  @State private var showSignIn = false
 
   var body: some View {
     TabView {
+      // Primary music playback interface.
       nowPlaying
         .tabItem {
           Label("Now Playing", systemImage: "play.fill")
         }
-            
+      
+      // Interface for localized or interactive content.
       MuseNearbyView()
         .tabItem {
           Label("Nearby", systemImage: "wave.3.up")
         }
     }
-    .tint(.primary)
+    .tint(
+      .primary
+    )
+    // Presents the sign-in screen as a full screen overlay when triggered.
     .fullScreenCover(isPresented: $showSignIn) {
       SignInView(showSignIn: $showSignIn)
     }
   }
     
+  // Encapsulates the components for the "Now Playing" section.
   var nowPlaying: some View {
     VStack {
+      // Header component acts as a trigger for logout options.
       Button {
         showHeaderAlert = true
       } label: {
         HeaderView()
       }
+      // Provides logout confirmation with an option to cancel.
       .alert("Logout", isPresented: $showHeaderAlert) {
         Button("Cancel", role: .cancel) { }
         Button("Logout", role: .destructive) {
-          showSignIn = true  // Update local state
+          // Transition to sign-in after logout is confirmed.
+          showSignIn = true
         }
       }
-            
+      
       Spacer()
+      // Displays current music information, driven by user data from the view model.
       MusicDisplayView(user: viewModel.user)
       Spacer()
-      // TODO: Media controls
+      // Placeholder for additional media controls to be integrated.
       Spacer()
     }
   }
 }
 
+// SwiftUI preview setup using a mock model to simulate realistic app data.
 #Preview {
-  MuseHomeView()
-    .environment(MuseViewModel())
+  let model = MuseModel(musicService: MockMusicService())
+  model.setTestData(
+    user: TestData.testUser,
+    listeners: TestData.testListeners
+  )
+  let viewModel = MuseViewModel(model: model)
+    
+  return MuseHomeView()
+    .environment(viewModel)
 }

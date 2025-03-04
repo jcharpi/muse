@@ -2,15 +2,15 @@ import SwiftUI
 
 @main
 struct MuseApp: App {
-  @StateObject var viewModel = MuseViewModel()
-
+  @State private var viewModel = MuseViewModel()
+    
   var body: some Scene {
     WindowGroup {
       MuseHomeView()
-        .environmentObject(viewModel)
+        .environment(viewModel)  // New environment injection style
     }
   }
-  
+    
   private struct Constants {
     static let backgroundColor: Color = Color.black.opacity(0.8)
   }

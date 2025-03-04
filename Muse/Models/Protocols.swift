@@ -1,12 +1,11 @@
 import Foundation
 
-protocol MusicDisplayable {
-  var listeningTo: MusicDisplayData { get set }
+protocol SpotifyAccount: Codable, Equatable, Identifiable {
+  var displayName: String { get }
+  var images: [SpotifyImage] { get }
+  var id: String { get }
 }
 
-// TODO: make id more unique
-protocol IdentifiableEntity: Identifiable {
-  var id: String { get set }
-  var name: String { get set }
-  var profilePic: String { get set }
+protocol MusicDisplayable {
+  var listeningTo: SpotifyTrack? { get }
 }

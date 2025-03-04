@@ -3,9 +3,11 @@ import SwiftUI
 struct ButtonView: View {
   @Environment(MuseViewModel.self) private var viewModel
     
+  // Encapsulated interaction handler with type erasure
   private let listener: Listener
   private let style: ButtonStyle
     
+  // Enforces explicit style declaration at creation
   init(_ listener: Listener, style: ButtonStyle) {
     self.listener = listener
     self.style = style
@@ -17,6 +19,7 @@ struct ButtonView: View {
     let colors = viewModel.buttonColors(for: type)
         
     Group {
+      // Optional content strategy with type safety
       if let title = data.title {
         textButton(title, colors)
       } else if let icon = data.icon {
@@ -28,6 +31,7 @@ struct ButtonView: View {
     }
   }
     
+  // Text variant styling with theme compliance
   private func textButton(_ title: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Text(title)
       .font(Constants.titleFontSize)
@@ -39,6 +43,7 @@ struct ButtonView: View {
       .cornerRadius(Constants.cornerRadius)
   }
     
+  // Icon variant with circular containment
   private func iconButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Image(systemName: icon)
       .font(Constants.iconFontSize)
