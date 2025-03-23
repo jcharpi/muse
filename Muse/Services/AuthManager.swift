@@ -1,21 +1,39 @@
 import Foundation
 import SpotifyiOS
+import SwiftUI
 
+/// Central authentication and Spotify playback state observer
+/// Handles user authentication and tracks music playback state
 @Observable
 final class AuthManager: NSObject {
+  /// Shared instance for app-wide access
   static let shared = AuthManager()
+    
+  // MARK: - Authentication State
+  /// Indicates if user is logged in to Spotify (observed by SwiftUI views)
   var isAuthenticated = false
     
-  // MARK: - Spotify Components
+  // MARK: - Playback State
+  /// Current player state from Spotify (observed by SwiftUI views)
+  var playerState: SPTAppRemotePlayerState?
+    
+  // MARK: - Spotify Configuration
+  /// Non-observable Spotify SDK configuration
   @ObservationIgnored private let configuration: SPTConfiguration
+    
+  /// Manager for authentication sessions
   @ObservationIgnored private let sessionManager: SPTSessionManager
+    
+  /// Remote interface for Spotify connection
   @ObservationIgnored lazy var appRemote: SPTAppRemote = {
     let remote = SPTAppRemote(configuration: configuration, logLevel: .debug)
     remote.delegate = self
     return remote
   }()
     
-  private var accessToken: String? {
+  // MARK: - Token Management
+  /// Current access token with restricted write access
+  private(set) var accessToken: String? {
     didSet {
       appRemote.connectionParameters.accessToken = accessToken
     }
@@ -23,12 +41,13 @@ final class AuthManager: NSObject {
     
   // MARK: - Initialization
   override init() {
-    // Initialize configuration with secure values
+    // Set up Spotify configuration with credentials from Secrets.swift
     configuration = SPTConfiguration(
       clientID: Secrets.spotifyClientID,
       redirectURL: Secrets.spotifyRedirectURL
     )
         
+    // Initialize session manager with configuration
     sessionManager = SPTSessionManager(
       configuration: configuration,
       delegate: nil
@@ -38,9 +57,16 @@ final class AuthManager: NSObject {
     sessionManager.delegate = self
   }
     
-  // MARK: - Auth Flow
+  // MARK: - Authentication Flow
+  /// Initiates Spotify login flow with read-only permissions
   func login() {
-    let scope: SPTScope = [.appRemoteControl, .userReadPlaybackState]
+    // Define required permissions (read-only)
+    let scope: SPTScope = [
+      .appRemoteControl,
+      .userReadPlaybackState
+    ]
+        
+    // Start authentication flow
     sessionManager.initiateSession(
       with: scope,
       options: .default,
@@ -48,6 +74,7 @@ final class AuthManager: NSObject {
     )
   }
     
+  /// Handles authentication callback from Spotify
   func handleCallback(url: URL) {
     let parameters = appRemote.authorizationParameters(from: url)
         
@@ -61,14 +88,30 @@ final class AuthManager: NSObject {
     }
   }
     
+  /// Clears all authentication state and disconnects from Spotify
   func logout() {
     appRemote.disconnect()
-    isAuthenticated = false
     accessToken = nil
+    isAuthenticated = false
+    playerState = nil
+  }
+    
+  // MARK: - State Management
+  /// Fetches current player state from Spotify
+  private func fetchPlayerState() {
+    appRemote.playerAPI?.getPlayerState { [weak self] result, error in
+      guard let self else { return }
+            
+      if let error = error {
+        print("Error fetching player state: \(error.localizedDescription)")
+      } else if let state = result as? SPTAppRemotePlayerState {
+        self.playerState = state
+      }
+    }
   }
 }
 
-// MARK: - Session Manager Delegates
+// MARK: - Session Management Delegates
 extension AuthManager: SPTSessionManagerDelegate {
   @objc func sessionManager(
     manager: SPTSessionManager,
@@ -89,9 +132,17 @@ extension AuthManager: SPTSessionManagerDelegate {
 }
 
 // MARK: - App Remote Delegates
-extension AuthManager: SPTAppRemoteDelegate {
+extension AuthManager: SPTAppRemoteDelegate, SPTAppRemotePlayerStateDelegate {
   func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
-    print("Spotify App Remote connected")
+    print("Spotify Connected")
+    appRemote.playerAPI?.delegate = self
+    appRemote.playerAPI?.subscribe(toPlayerState: { [weak self] _, error in
+      if let error = error {
+        print("Subscription error: \(error.localizedDescription)")
+      } else {
+        self?.fetchPlayerState()
+      }
+    })
   }
     
   func appRemote(
@@ -99,17 +150,24 @@ extension AuthManager: SPTAppRemoteDelegate {
     didDisconnectWithError error: Error?
   ) {
     print(
-      "Spotify connection lost:",
-      error?.localizedDescription ?? "unknown error"
+      "Spotify Disconnected: \(error?.localizedDescription ?? "Unknown error")"
     )
     isAuthenticated = false
+    playerState = nil
   }
     
   func appRemote(
     _ appRemote: SPTAppRemote,
     didFailConnectionAttemptWithError error: Error?
   ) {
-    print("Connection failed:", error?.localizedDescription ?? "unknown error")
+    print(
+      "Connection Failed: \(error?.localizedDescription ?? "Unknown error")"
+    )
     isAuthenticated = false
+  }
+    
+  func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
+    self.playerState = playerState
+    print("Now Playing: \(playerState.track.name)")
   }
 }
