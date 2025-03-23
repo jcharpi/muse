@@ -20,13 +20,16 @@ class MuseViewModel {
   /// The underlying data model handling persistence and data fetching.
   private var model: MuseModel
   private(set) var listeners: [Listener] = []
+  private(set) var user: User
 
   // MARK: - Initialization
   
   /// Default initializer that creates a new data model instance and starts data loading.
   init() {
-    self.model = MuseModel()
-    self.listeners = model.listeners
+    let initialModel = MuseModel()
+    self.model = initialModel
+    self.user = initialModel.user
+    self.listeners = initialModel.listeners
     loadInitialData()
   }
   
@@ -34,14 +37,10 @@ class MuseViewModel {
   /// - Parameter model: An instance of `MuseModel` provided from outside.
   init(model: MuseModel) {
     self.model = model
+    self.user = model.user
     self.listeners = model.listeners
     loadInitialData()
   }
-  
-  // MARK: - Data Access
-  
-  /// Provides access to the current user from the model.
-  var user: User { model.user }
   
   // MARK: - Music Display Logic
   
@@ -160,20 +159,14 @@ class MuseViewModel {
   private func refreshState() {
     // Sync ViewModel's listeners with the Model's latest data
     // Ensures the UI reflects changes like new listeners or updated states
-    updateListeners()
-      
-    // If a listener is currently selected (e.g., in a modal),
-    // update it to point to the latest version in the listeners array
-    // This ensures reopened modals show fresh data (e.g., ".shared" state)
+    self.listeners = model.listeners
+    self.user = model.user
     updateSelectedListener()
   }
   
-  // Update listeners when model changes
-  private func updateListeners() {
-    self.listeners = model.listeners
-  }
-
-  // Updates the currently selected listener if its data has been modified.
+  // If a listener is currently selected (e.g., in a modal),
+  // update it to point to the latest version in the listeners array
+  // This ensures reopened modals show fresh data (e.g., ".shared" state)
   private func updateSelectedListener() {
     if let selectedId = selectedListener?.id {
       selectedListener = listeners.first { $0.id == selectedId }
