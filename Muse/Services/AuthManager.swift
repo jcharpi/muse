@@ -1,55 +1,115 @@
-// File: Muse/Services/AuthManager.swift
 import Foundation
-import SpotifyiOS // Add this import
+import SpotifyiOS
 
 @Observable
-class AuthManager {
-    static let shared = AuthManager()
-    var isAuthenticated = false
+final class AuthManager: NSObject {
+  static let shared = AuthManager()
+  var isAuthenticated = false
     
-    // Spotify configuration
-    private static let SpotifyClientID = "[YOUR_CLIENT_ID_HERE]" // Replace with actual ID
-    private static let SpotifyRedirectURL = URL(string: "muse://spotify-login-callback")!
+  // MARK: - Spotify Components
+  @ObservationIgnored private let configuration: SPTConfiguration
+  @ObservationIgnored private let sessionManager: SPTSessionManager
+  @ObservationIgnored lazy var appRemote: SPTAppRemote = {
+    let remote = SPTAppRemote(configuration: configuration, logLevel: .debug)
+    remote.delegate = self
+    return remote
+  }()
     
-    lazy var configuration: SPTConfiguration = {
-        let config = SPTConfiguration(clientID: AuthManager.SpotifyClientID,
-                                      redirectURL: AuthManager.SpotifyRedirectURL)
-        config.playURI = "" // Optional: Set play URI if needed
-        return config
-    }()
-    
-    // Add session manager instance
-    lazy var sessionManager: SPTSessionManager = {
-        return SPTSessionManager(configuration: configuration, delegate: self)
-    }()
-    
-    func login() {
-        let scope: SPTScope = [.appRemoteControl, .userReadPlaybackState]
-        sessionManager.initiateSession(with: scope, options: .default)
+  private var accessToken: String? {
+    didSet {
+      appRemote.connectionParameters.accessToken = accessToken
     }
+  }
     
-    func handleCallback(url: URL) {
-        sessionManager.application(UIApplication.shared, open: url, options: [:])
-    }
+  // MARK: - Initialization
+  override init() {
+    // Initialize configuration with secure values
+    configuration = SPTConfiguration(
+      clientID: Secrets.spotifyClientID,
+      redirectURL: Secrets.spotifyRedirectURL
+    )
+        
+    sessionManager = SPTSessionManager(
+      configuration: configuration,
+      delegate: nil
+    )
+        
+    super.init()
+    sessionManager.delegate = self
+  }
     
-    func logout() {
-        isAuthenticated = false
-        // Add session cleanup if needed
+  // MARK: - Auth Flow
+  func login() {
+    let scope: SPTScope = [.appRemoteControl, .userReadPlaybackState]
+    sessionManager.initiateSession(
+      with: scope,
+      options: .default,
+      campaign: "main_app_flow"
+    )
+  }
+    
+  func handleCallback(url: URL) {
+    let parameters = appRemote.authorizationParameters(from: url)
+        
+    if let token = parameters?[SPTAppRemoteAccessTokenKey] {
+      accessToken = token
+      appRemote.connect()
+      isAuthenticated = true
+    } else if let error = parameters?[SPTAppRemoteErrorDescriptionKey] {
+      print("Auth error: \(error)")
+      isAuthenticated = false
     }
+  }
+    
+  func logout() {
+    appRemote.disconnect()
+    isAuthenticated = false
+    accessToken = nil
+  }
 }
 
-// MARK: - SPTSessionManagerDelegate
+// MARK: - Session Manager Delegates
 extension AuthManager: SPTSessionManagerDelegate {
-    func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
-        isAuthenticated = true
-        // Store session and connect to Spotify app remote
-    }
+  @objc func sessionManager(
+    manager: SPTSessionManager,
+    didInitiate session: SPTSession
+  ) {
+    accessToken = session.accessToken
+    isAuthenticated = true
+    appRemote.connect()
+  }
     
-    func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
-        print("Auth failed: \(error.localizedDescription)")
-    }
+  @objc func sessionManager(
+    manager: SPTSessionManager,
+    didFailWith error: Error
+  ) {
+    print("Auth failed: \(error.localizedDescription)")
+    isAuthenticated = false
+  }
+}
+
+// MARK: - App Remote Delegates
+extension AuthManager: SPTAppRemoteDelegate {
+  func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
+    print("Spotify App Remote connected")
+  }
     
-    func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
-        // Handle session renewal
-    }
+  func appRemote(
+    _ appRemote: SPTAppRemote,
+    didDisconnectWithError error: Error?
+  ) {
+    print(
+      "Spotify connection lost:",
+      error?.localizedDescription ?? "unknown error"
+    )
+    isAuthenticated = false
+  }
+    
+  func appRemote(
+    _ appRemote: SPTAppRemote,
+    didFailConnectionAttemptWithError error: Error?
+  ) {
+    print("Connection failed:", error?.localizedDescription ?? "unknown error")
+    isAuthenticated = false
+  }
 }
