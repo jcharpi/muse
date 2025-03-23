@@ -48,16 +48,26 @@ struct ButtonView: View {
     Image(systemName: icon)
       .font(Constants.iconFontSize)
       .fontWeight(.semibold)
+      .frame(
+        width: Constants.iconSize,
+        height: Constants.iconSize
+      ) // Fixed frame
+      .scaledToFit() // Maintain aspect ratio
       .foregroundStyle(colors.primaryColor)
-      .padding()
       .background(
         Circle()
           .stroke(lineWidth: Constants.iconCircleStrokeWidth)
           .foregroundStyle(colors.primaryColor)
+          .frame(width: Constants.circleSize, height: Constants.circleSize)
       )
+      .padding(Constants.iconPadding) // Consistent padding
+
   }
-    
+  
   private struct Constants {
+    static let iconSize: CGFloat = 30 // Fixed icon dimensions
+    static let circleSize: CGFloat = 56 // Fixed background size
+    static let iconPadding: CGFloat = 16
     static let verticalPadding: CGFloat = 8
     static let horizontalPadding: CGFloat = 24
     static let cornerRadius: CGFloat = 20

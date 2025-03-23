@@ -19,12 +19,14 @@ class MuseViewModel {
   
   /// The underlying data model handling persistence and data fetching.
   private var model: MuseModel
-  
+  private(set) var listeners: [Listener] = []
+
   // MARK: - Initialization
   
   /// Default initializer that creates a new data model instance and starts data loading.
   init() {
     self.model = MuseModel()
+    self.listeners = model.listeners
     loadInitialData()
   }
   
@@ -32,13 +34,11 @@ class MuseViewModel {
   /// - Parameter model: An instance of `MuseModel` provided from outside.
   init(model: MuseModel) {
     self.model = model
+    self.listeners = model.listeners
     loadInitialData()
   }
   
   // MARK: - Data Access
-  
-  /// Exposes listener data from the model.
-  var listeners: [Listener] { model.listeners }
   
   /// Provides access to the current user from the model.
   var user: User { model.user }
@@ -77,13 +77,12 @@ class MuseViewModel {
   func buttonTap(_ listener: Listener) {
     Task {
       do {
-        // Execute the action defined in the model for the listener's button.
         try await model
           .handleButtonAction(for: listener, type: listener.buttonToShow)
-        // Refresh the selected listener to reflect any changes from the action.
-        await updateSelectedListenerIfNeeded(listener)
+        await MainActor.run {
+          refreshState() // Sync ViewModel with Model
+        }
       } catch {
-        // Centralized error handling for button actions.
         handleButtonActionError(error)
       }
     }
@@ -145,8 +144,11 @@ class MuseViewModel {
     Task {
       do {
         try await model.loadData()
+        await MainActor.run {
+          // Sync ViewModel after Model updates
+          refreshState()
+        }
       } catch {
-        // Log errors instead of propagating them, as this is a non-critical path.
         print("Data loading error: \(error.localizedDescription)")
       }
     }
@@ -154,15 +156,27 @@ class MuseViewModel {
   
   // MARK: - Listener Management
   
-  /// Updates the currently selected listener if its data has been modified.
-  /// This runs on the main thread to synchronize with the UI.
-  /// - Parameter listener: The listener to potentially update.
-  func updateSelectedListenerIfNeeded(_ listener: Listener) async {
-    await MainActor.run {
-      // Reassigns the selected listener to reflect any changes in the model.
-      if selectedListener?.id == listener.id {
-        selectedListener = model.listeners.first { $0.id == listener.id }
-      }
+  // Call this after any model mutation
+  private func refreshState() {
+    // Sync ViewModel's listeners with the Model's latest data
+    // Ensures the UI reflects changes like new listeners or updated states
+    updateListeners()
+      
+    // If a listener is currently selected (e.g., in a modal),
+    // update it to point to the latest version in the listeners array
+    // This ensures reopened modals show fresh data (e.g., ".shared" state)
+    updateSelectedListener()
+  }
+  
+  // Update listeners when model changes
+  private func updateListeners() {
+    self.listeners = model.listeners
+  }
+
+  // Updates the currently selected listener if its data has been modified.
+  private func updateSelectedListener() {
+    if let selectedId = selectedListener?.id {
+      selectedListener = listeners.first { $0.id == selectedId }
     }
   }
   

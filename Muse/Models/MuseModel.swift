@@ -37,7 +37,6 @@ final class MuseModel {
     // Copy-on-write pattern for thread safety
     var updatedListener = listeners[index]
     try await handleAction(type: type, for: &updatedListener)
-    // Atomic listener update
     listeners[index] = updatedListener
   }
     
