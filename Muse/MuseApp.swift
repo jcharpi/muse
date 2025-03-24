@@ -1,4 +1,3 @@
-// Muse/MuseApp.swift
 import SwiftUI
 
 @main
@@ -8,12 +7,17 @@ struct MuseApp: App {
     
   var body: some Scene {
     WindowGroup {
-      MuseHomeView()
-        .environment(viewModel)
-        .environmentObject(spotifyController)
-        .onOpenURL { url in
-          spotifyController.setAccessToken(from: url)
-        }
+      if spotifyController.accessToken != nil {
+        MuseHomeView()
+          .environment(viewModel)
+          .environmentObject(spotifyController)
+          .onOpenURL { url in
+            spotifyController.setAccessToken(from: url)
+          }
+      } else {
+        SignInView(showSignIn: .constant(false)) // Binding not needed here
+          .environmentObject(spotifyController)
+      }
     }
   }
     

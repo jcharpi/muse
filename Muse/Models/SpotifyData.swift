@@ -12,7 +12,6 @@ struct SpotifyAlbum: Codable, Equatable {
 }
 
 struct SpotifyArtist: Codable, Equatable {
-  let id: String
   let name: String
 }
 

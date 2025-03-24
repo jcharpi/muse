@@ -10,16 +10,10 @@ final class SpotifyController: NSObject, ObservableObject {
   let spotifyRedirectURL = URL(
     string: "spotify-ios-quick-start://spotify-login-callback"
   )!
-  
-  var isAuthenticated: Bool {
-    accessToken != nil
-  }
-    
+
   // MARK: - Player State Properties
+  @Published var currentTrack: SpotifyTrack?
   @Published var accessToken: String?
-  @Published var currentTrackURI: String?
-  @Published var currentTrackName: String?
-  @Published var currentTrackArtist: String?
   @Published var currentTrackImage: UIImage?
     
   // MARK: - Spotify SDK Components
@@ -185,11 +179,14 @@ extension SpotifyController: SPTAppRemotePlayerStateDelegate {
     _ playerState: SPTAppRemotePlayerState
   ) {
     Task { @MainActor in
-      currentTrackURI = playerState.track.uri
-      currentTrackName = playerState.track.name
-      currentTrackArtist = playerState.track.artist.name
-            
-      // Update track artwork
+      // Update currentTrack
+      currentTrack = SpotifyTrack(
+        uri: playerState.track.uri,
+        name: playerState.track.name,
+        artists: [SpotifyArtist(name: playerState.track.artist.name)],
+        album: SpotifyAlbum(images: [])
+      )
+      
       fetchImage()
     }
   }

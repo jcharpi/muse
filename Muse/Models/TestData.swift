@@ -13,7 +13,7 @@ struct TestData {
     listeningTo: SpotifyTrack(
       uri: "spotify:track:mock123",
       name: "Sample Track",
-      artists: [SpotifyArtist(id: "artist1", name: "Sample Artist")],
+      artists: [SpotifyArtist(name: "Sample Artist")],
       album: SpotifyAlbum(images: [])
     )
   )
@@ -43,7 +43,7 @@ struct TestData {
       listeningTo: SpotifyTrack(
         uri: "spotify:track:mock1",
         name: "Sample Listening",
-        artists: [SpotifyArtist(id: "listening", name: "Sample Listening")],
+        artists: [SpotifyArtist(name: "Sample Listening")],
         album: SpotifyAlbum(
           images: [SpotifyImage(
             url: URL(
@@ -55,7 +55,7 @@ struct TestData {
       recommendedMe: SpotifyTrack(
         uri: "spotify:track:recommended",
         name: "Recommended Track",
-        artists: [SpotifyArtist(id: "artist3", name: "Artist Three")],
+        artists: [SpotifyArtist(name: "Artist Three")],
         album: SpotifyAlbum(images: [])
       )
     ),
