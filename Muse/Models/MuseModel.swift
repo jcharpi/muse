@@ -13,6 +13,11 @@ final class MuseModel {
     self.user = Self.defaultUser
   }
     
+  // Allow the model to update the user's current track
+  func updateListeningTo(_ track: SpotifyTrack?) {
+    user.listeningTo = track
+  }
+  
   // Test harness injection point
   func setTestData(user: User, listeners: [Listener]) {
     self.user = user

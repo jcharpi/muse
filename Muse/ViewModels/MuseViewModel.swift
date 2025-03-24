@@ -1,5 +1,5 @@
 import SwiftUI
-
+import Combine
 /// Manages the app’s business logic and state for music interactions and UI configuration.
 /// It mediates between the underlying MuseModel and the SwiftUI views.
 @MainActor
@@ -21,8 +21,28 @@ class MuseViewModel {
   private var model: MuseModel
   private(set) var listeners: [Listener] = []
   private(set) var user: User
-
+  
+  private var cancellables = Set<AnyCancellable>()
+  var spotifyController: SpotifyController? {
+    didSet { setupSpotifyObservers() }
+  }
+  
   // MARK: - Initialization
+  // Set current user currently listening to
+  private func setupSpotifyObservers() {
+    /// Watch for changes in the spotifyController's current track
+    spotifyController?.$currentTrack
+    /// Update on the main thread (UI-safe)
+      .receive(on: DispatchQueue.main)
+    /// subscripes to  track changes
+      .sink { [weak self] track in
+        guard let self = self else { return }
+        /// Sync SpotifyController with ViewModel
+        self.model.updateListeningTo(track)
+      }
+    /// stores subscription
+      .store(in: &cancellables)
+  }
   
   /// Default initializer that creates a new data model instance and starts data loading.
   init() {

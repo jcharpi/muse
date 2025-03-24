@@ -25,12 +25,6 @@ final class SpotifyController: NSObject, ObservableObject {
       clientID: spotifyClientID,
       redirectURL: spotifyRedirectURL
     )
-    config.tokenSwapURL = URL(
-      string: "https://your-token-swap-service.com"
-    ) // Optional for token refresh
-    config.tokenRefreshURL = URL(
-      string: "https://your-token-refresh-service.com"
-    ) // Optional
     return config
   }()
     
