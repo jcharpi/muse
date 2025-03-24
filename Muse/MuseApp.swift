@@ -26,7 +26,6 @@ struct MuseApp: App {
     }
   }
 
-    
   private struct Constants {
     static let backgroundColor: Color = Color.black.opacity(0.8)
   }

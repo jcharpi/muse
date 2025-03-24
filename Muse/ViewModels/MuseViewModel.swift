@@ -28,7 +28,6 @@ class MuseViewModel {
   }
   
   // MARK: - Initialization
-  // Set current user currently listening to
   private func setupSpotifyObservers() {
     /// Watch for changes in the spotifyController's current track
     spotifyController?.$currentTrack
@@ -39,6 +38,7 @@ class MuseViewModel {
         guard let self = self else { return }
         /// Sync SpotifyController with ViewModel
         self.model.updateListeningTo(track)
+        self.user = self.model.user
       }
     /// stores subscription
       .store(in: &cancellables)
