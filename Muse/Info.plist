@@ -5,17 +5,22 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>charpi.Muse</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>muse</string>
 			</array>
+			<key>CFBundleURLName</key>
+			<string>charpi.Muse</string>
 		</dict>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>spotify</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
