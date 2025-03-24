@@ -10,6 +10,10 @@ final class SpotifyController: NSObject, ObservableObject {
   let spotifyRedirectURL = URL(
     string: "spotify-ios-quick-start://spotify-login-callback"
   )!
+  
+  var isAuthenticated: Bool {
+    accessToken != nil
+  }
     
   // MARK: - Player State Properties
   @Published var accessToken: String?

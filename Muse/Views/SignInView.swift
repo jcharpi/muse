@@ -2,24 +2,16 @@ import SwiftUI
 
 /// A view that presents the Spotify authentication screen and app introduction
 struct SignInView: View {
-  // MARK: - Properties
   @Binding var showSignIn: Bool
-  /// Environment property to access view dismissal functionality
   @Environment(\.dismiss) private var dismiss
+  @EnvironmentObject private var spotifyController: SpotifyController
     
-  // MARK: - Main View
   var body: some View {
     VStack(spacing: Constants.vStackSpacing) {
       Spacer()
-            
-      // Header Section
       featureDescription
-            
       Spacer()
-            
-      // Sign In Button
       spotifySignInButton
-            
       Spacer()
     }
     .padding()
@@ -64,13 +56,8 @@ struct SignInView: View {
   // MARK: - Actions
   /// Handles the Spotify authentication flow
   private func signInWithSpotify() {
-    // 1. Initiate authentication through shared manager
-    AuthManager.shared.login()
-        
-    // 2. Update presentation state
+    spotifyController.authorize()
     showSignIn = false
-        
-    // 3. Dismiss the view
     dismiss()
   }
     

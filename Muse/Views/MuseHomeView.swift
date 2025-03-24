@@ -4,7 +4,8 @@ import SwiftUI
 struct MuseHomeView: View {
   // Injects a view model from the environment to supply user data and business logic.
   @Environment(MuseViewModel.self) private var viewModel
-  
+  @EnvironmentObject private var spotifyController: SpotifyController
+
   // Controls the display of the logout alert when interacting with the header.
   @State private var showHeaderAlert = false
   
@@ -37,17 +38,16 @@ struct MuseHomeView: View {
   // Encapsulates the components for the "Now Playing" section.
   var nowPlaying: some View {
     VStack {
-      // Header component acts as a trigger for logout options.
       Button {
         showHeaderAlert = true
       } label: {
         HeaderView()
       }
-      // Provides logout confirmation with an option to cancel.
       .alert("Logout", isPresented: $showHeaderAlert) {
         Button("Cancel", role: .cancel) { }
         Button("Logout", role: .destructive) {
-          // Transition to sign-in after logout is confirmed.
+          spotifyController.disconnect()
+          spotifyController.accessToken = nil
           showSignIn = true
         }
       }
