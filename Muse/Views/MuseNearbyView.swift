@@ -42,7 +42,7 @@ struct MuseNearbyView: View {
   private var listenerModal: some View {
     ListenerModalView()
       .environment(viewModel)
-      .presentationDragIndicator(.visible)
+      .presentationDragIndicator(.hidden)
   }
 
   // MARK: - Actions

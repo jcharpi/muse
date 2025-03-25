@@ -10,7 +10,7 @@ struct MuseHomeView: View {
   @EnvironmentObject private var spotifyController: SpotifyController
 
   // MARK: - State
-  @State private var showHeaderAlert = false // Controls logout confirmation dialog
+  @State private var showHeaderAlert = false // Controls disconnect confirmation dialog
   @State private var showSignIn = false // Toggles full-screen sign-in overlay
 
   // MARK: - Body
@@ -29,14 +29,14 @@ struct MuseHomeView: View {
   }
 
   // MARK: - Subviews
-  /// Current user's playback interface with logout controls
+  /// Current user's playback interface with disconnect controls
   private var nowPlaying: some View {
     VStack {
-      // Profile header with logout capability
+      // Profile header with disconnect capability
       Button { showHeaderAlert = true } label: { HeaderView() }
-        .alert("Logout", isPresented: $showHeaderAlert) {
+        .alert("Disconnect", isPresented: $showHeaderAlert) {
           Button("Cancel", role: .cancel) { }
-          Button("Logout", role: .destructive) {
+          Button("Disconnect", role: .destructive) {
             spotifyController.disconnect()
             spotifyController.accessToken = nil
             showSignIn = true // Trigger auth flow

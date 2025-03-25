@@ -33,7 +33,6 @@ struct ListenerModalView: View {
         }
         .padding(.bottom, Constants.bottomPadding)
       }
-      .padding()
       .frame(maxHeight: .infinity)
     } else {
       Text("No listener selected")
@@ -44,7 +43,7 @@ struct ListenerModalView: View {
   private struct Constants {
     static let minHeight: CGFloat = 50.0
     static let topPadding: CGFloat = 8.0
-    static let verticalSpacing: CGFloat = 80
+    static let verticalSpacing: CGFloat = 32.0
     static let bottomPadding: CGFloat = 24 // Bottom space replacement
   }
 }
@@ -54,8 +53,9 @@ struct ListenerModalView: View {
   let viewModel = MuseViewModel(
     model: MuseModel(musicService: MockMusicService())
   )
-  viewModel.selectedListener = TestData.testListeners.first
+  viewModel.selectedListener = TestData.testListeners[1]
     
   return ListenerModalView()
     .environment(viewModel)
+    .environmentObject(SpotifyController())
 }

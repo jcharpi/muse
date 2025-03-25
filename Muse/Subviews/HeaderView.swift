@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - HeaderView
 /// Displays the user's profile icon in the top-right corner of the screen.
-/// - Tapping the icon triggers a logout confirmation alert.
+/// - Tapping the icon triggers a disconnect confirmation alert.
 struct HeaderView: View {
   // MARK: - Dependencies
   @Environment(MuseViewModel.self) private var viewModel

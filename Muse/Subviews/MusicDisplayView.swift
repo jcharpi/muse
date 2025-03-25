@@ -42,13 +42,17 @@ struct MusicDisplayView: View {
           SongTabView(track: track, headerTitle: header)
         }
       }
-      .tabViewStyle(.page(indexDisplayMode: .always))
+      .tabViewStyle(.page(indexDisplayMode: .never))
+      // Ensure consistent height with single track view
+      .frame(maxHeight: Constants.maxHeight)
     } else {
       // Fallback to a single track display when listener hasn't recommended a song.
       SongTabView(
         track: tracks.first?.track,
         headerTitle: tracks.first?.header ?? "No Track"
       )
+      // Match height with carousel display
+      .frame(maxHeight: Constants.maxHeight)
     }
   }
     
@@ -68,6 +72,11 @@ struct MusicDisplayView: View {
     case listener(Listener)
     case user(User)
   }
+  
+  // MARK: - Constants
+  private struct Constants {
+    static let maxHeight: CGFloat = 500
+  }
 }
 
 // MARK: - Previews
@@ -83,6 +92,7 @@ struct MusicDisplayView: View {
     
   return MusicDisplayView(listener: TestData.testListeners[0])
     .environment(viewModel)
+    .environmentObject(SpotifyController())
 }
 
 #Preview {
@@ -96,6 +106,7 @@ struct MusicDisplayView: View {
     
   return MusicDisplayView(listener: TestData.testListeners[1])
     .environment(viewModel)
+    .environmentObject(SpotifyController())
 }
 
 #Preview {
@@ -109,4 +120,5 @@ struct MusicDisplayView: View {
     
   return MusicDisplayView(user: TestData.testUser)
     .environment(viewModel)
+    .environmentObject(SpotifyController())
 }
