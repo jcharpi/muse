@@ -49,7 +49,7 @@ struct MusicDisplayView: View {
       // Fallback to a single track display when listener hasn't recommended a song.
       SongTabView(
         track: tracks.first?.track,
-        headerTitle: tracks.first?.header ?? "No Track"
+        headerTitle: tracks.first?.header ?? ""
       )
       // Match height with carousel display
       .frame(maxHeight: Constants.maxHeight)
@@ -75,7 +75,7 @@ struct MusicDisplayView: View {
   
   // MARK: - Constants
   private struct Constants {
-    static let maxHeight: CGFloat = 500
+    static let maxHeight: CGFloat = 550
   }
 }
 

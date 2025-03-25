@@ -15,7 +15,7 @@ final class MuseModel {
     
   // MARK: Initialization
   /// Initializes with a `MusicService` (defaults to mock for testing).
-  init(musicService: MusicService = MockMusicService()) {
+  init(musicService: MusicService = EmptyMusicService()) {
     self.musicService = musicService
     self.listeners = []
     self.user = Self.defaultUser
@@ -71,7 +71,7 @@ final class MuseModel {
     if let current = listener.listeningTo {
       tracks.append((current, "Now Listening"))
     }
-    return tracks.isEmpty ? [(nil, "No Track")] : tracks
+    return tracks.isEmpty ? [(nil, "")] : tracks
   }
   
   /// Determines if a carousel should show for a listener.
@@ -81,7 +81,7 @@ final class MuseModel {
   
   /// Generates header text for the user's current state.
   func userHeader(_ user: User) -> String {
-    user.listeningTo != nil ? "Now Playing" : "No Track"
+    user.listeningTo != nil ? "Now Playing" : ""
   }
 }
 

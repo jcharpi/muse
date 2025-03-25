@@ -26,7 +26,6 @@ struct MuseApp: App {
             .environmentObject(spotifyController)
         }
       }
-      .background(Constants.backgroundColor) // App-wide background
       .onOpenURL { url in
         // Handle Spotify authentication callback
         spotifyController.setAccessToken(from: url)

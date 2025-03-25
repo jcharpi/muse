@@ -43,8 +43,8 @@ struct ListenerModalView: View {
   private struct Constants {
     static let minHeight: CGFloat = 50.0
     static let topPadding: CGFloat = 8.0
-    static let verticalSpacing: CGFloat = 32.0
-    static let bottomPadding: CGFloat = 24 // Bottom space replacement
+    static let verticalSpacing: CGFloat = 24.0
+    static let bottomPadding: CGFloat = 24.0
   }
 }
 

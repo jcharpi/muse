@@ -34,7 +34,9 @@ struct EmptyMusicService: MusicService {
     )
   }
   
-  func fetchNearbyListeners() async throws -> [Listener] { [] }
+  func fetchNearbyListeners() async throws -> [Listener] {
+    TestData.testListeners
+  }
   
   func shareTrack(_ trackId: String, with userId: String) async throws {
     // No-op for unauthenticated state
