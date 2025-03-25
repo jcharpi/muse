@@ -1,14 +1,16 @@
 import Foundation
 
+// MARK: - TestData
+/// Provides mock data for SwiftUI previews and testing.
 struct TestData {
-  // Base user profile with active listening context
+  /// Mock user with active listening context.
   static let testUser = User(
     id: "mock-user-123",
     displayName: "Test User",
     images: [SpotifyImage(
-      url: URL(  // Actual Spotify CDN URL pattern for image validation
+      url: URL(
         string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228"
-              )!
+      )!
     )],
     listeningTo: SpotifyTrack(
       uri: "spotify:track:mock123",
@@ -18,9 +20,8 @@ struct TestData {
     )
   )
     
-  // Spectrum of listener interaction states
+  /// Array of listeners with varying interaction states.
   static let testListeners = [
-    // Basic listener without activity
     Listener(
       id: "1",
       displayName: "Listener One",
@@ -28,10 +29,8 @@ struct TestData {
         url: URL(
           string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228"
         )!
-      )],
-      listeningTo: nil
+      )]
     ),
-    // Fully engaged listener with recommendations
     Listener(
       id: "2",
       displayName: "Listener Two",
@@ -45,11 +44,11 @@ struct TestData {
         name: "Sample Listening",
         artists: [SpotifyArtist(name: "Sample Listening")],
         album: SpotifyAlbum(
-          images: [SpotifyImage(
-            url: URL(
-              string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228"
-            )!
-          )]
+images: [SpotifyImage(
+  url: URL(
+    string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228"
+  )!
+)]
         )
       ),
       recommendedMe: SpotifyTrack(
@@ -59,7 +58,6 @@ struct TestData {
         album: SpotifyAlbum(images: [])
       )
     ),
-    // Sent recommendation to this listener without current activity
     Listener(
       id: "3",
       displayName: "Listener Three",
@@ -68,7 +66,6 @@ struct TestData {
           string: "https://example.com/user3.jpg"
         )!
       )],
-      listeningTo: nil,
       sentRecommendation: true
     )
   ]

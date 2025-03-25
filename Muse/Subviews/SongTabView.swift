@@ -135,8 +135,7 @@ struct SongTabView: View {
   }
 }
 
-// MARK: - Preview Configurations
-
+// MARK: - Previews
 /// SwiftUI previews showing different display states
 #Preview("Current Track with Artwork") {
   SongTabView(
@@ -151,6 +150,7 @@ struct SongTabView: View {
     track: TestData.testUser.listeningTo,
     headerTitle: "Now Playing"
   )
+  .environmentObject(SpotifyController())
 }
 
 #Preview("Inactive State") {
@@ -158,4 +158,5 @@ struct SongTabView: View {
     track: nil,
     headerTitle: "No Track Available"
   )
+  .environmentObject(SpotifyController())
 }

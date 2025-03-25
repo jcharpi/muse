@@ -1,37 +1,43 @@
 import SwiftUI
 
+// MARK: - ButtonView
+/// A customizable button that dynamically adapts to listener interaction states.
+/// - Supports both text and icon styles.
+/// - Taps trigger asynchronous actions via `MuseViewModel`.
 struct ButtonView: View {
+  // MARK: - Dependencies
   @Environment(MuseViewModel.self) private var viewModel
-    
-  // Encapsulated interaction handler with type erasure
+  
+  // MARK: - Properties
   private let listener: Listener
   private let style: ButtonStyle
-    
-  // Enforces explicit style declaration at creation
+  
+  // MARK: - Initialization
+  /// - Parameters:
+  ///   - listener: The listener associated with this button.
+  ///   - style: Determines if the button displays text or an icon.
   init(_ listener: Listener, style: ButtonStyle) {
     self.listener = listener
     self.style = style
   }
-    
+  
+  // MARK: - Body
   var body: some View {
     let type = listener.buttonToShow
     let data = viewModel.buttonData(for: type, style: style)
     let colors = viewModel.buttonColors(for: type)
-        
+    
     Group {
-      // Optional content strategy with type safety
       if let title = data.title {
         textButton(title, colors)
       } else if let icon = data.icon {
         iconButton(icon, colors)
       }
     }
-    .onTapGesture {
-      viewModel.buttonTap(listener)
-    }
+    .onTapGesture { viewModel.buttonTap(listener) }
   }
-    
-  // Text variant styling with theme compliance
+  
+  // MARK: - Subviews
   private func textButton(_ title: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Text(title)
       .font(Constants.titleFontSize)
@@ -42,17 +48,13 @@ struct ButtonView: View {
       .background(colors.primaryColor)
       .cornerRadius(Constants.cornerRadius)
   }
-    
-  // Icon variant with circular containment
+  
   private func iconButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
     Image(systemName: icon)
       .font(Constants.iconFontSize)
       .fontWeight(.semibold)
-      .frame(
-        width: Constants.iconSize,
-        height: Constants.iconSize
-      ) // Fixed frame
-      .scaledToFit() // Maintain aspect ratio
+      .frame(width: Constants.iconSize, height: Constants.iconSize)
+      .scaledToFit()
       .foregroundStyle(colors.primaryColor)
       .background(
         Circle()
@@ -60,13 +62,13 @@ struct ButtonView: View {
           .foregroundStyle(colors.primaryColor)
           .frame(width: Constants.circleSize, height: Constants.circleSize)
       )
-      .padding(Constants.iconPadding) // Consistent padding
-
+      .padding(Constants.iconPadding)
   }
   
+  // MARK: - Constants
   private struct Constants {
-    static let iconSize: CGFloat = 30 // Fixed icon dimensions
-    static let circleSize: CGFloat = 56 // Fixed background size
+    static let iconSize: CGFloat = 30
+    static let circleSize: CGFloat = 56
     static let iconPadding: CGFloat = 16
     static let verticalPadding: CGFloat = 8
     static let horizontalPadding: CGFloat = 24
@@ -77,6 +79,7 @@ struct ButtonView: View {
   }
 }
 
+// MARK: - Previews
 #Preview {
   let testListeners = TestData.testListeners
     
