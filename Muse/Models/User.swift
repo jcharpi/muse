@@ -1,11 +1,15 @@
+import Foundation
+
+// MARK: - User
+/// Represents the current application user, conforming to Spotify and music display protocols.
 struct User: SpotifyAccount, MusicDisplayable {
+  // MARK: Properties
   let id: String
   let displayName: String
   let images: [SpotifyImage]
-  // user playback state (nil = inactive)
-  var listeningTo: SpotifyTrack?
+  var listeningTo: SpotifyTrack? // Current playback track
     
-  // Controlled construction for partial state simulation
+  // MARK: Initialization
   public init(
     id: String,
     displayName: String,

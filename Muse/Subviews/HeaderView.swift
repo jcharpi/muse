@@ -1,31 +1,33 @@
 import SwiftUI
 
+// MARK: - HeaderView
+/// Displays the user's profile icon in the top-right corner of the screen.
+/// - Tapping the icon triggers a disconnect confirmation alert.
 struct HeaderView: View {
+  // MARK: - Dependencies
   @Environment(MuseViewModel.self) private var viewModel
-    
+  
+  // MARK: - Body
   var body: some View {
     HStack {
       Spacer()
-      
       ProfileIconView(
-        // Gracefully handles optional nested image URL
         imageUrl: viewModel.user.images.first?.url,
         size: Constants.profileIconSize
       )
       .padding(.trailing, Constants.trailingPadding)
-      .padding(.leading, Constants.leadingPadding)
     }
     .padding(.vertical)
   }
-    
+  
+  // MARK: - Constants
   private struct Constants {
     static let profileIconSize: CGFloat = 40
     static let trailingPadding: CGFloat = 16
-    static let leadingPadding: CGFloat = 8
   }
 }
 
-// Configures preview with mock service layer
+// MARK: - Previews
 #Preview {
   let model = MuseModel(musicService: MockMusicService())
   model.user = TestData.testUser

@@ -1,24 +1,32 @@
 import Foundation
 
+// MARK: - SpotifyTrack
+/// Represents a track from Spotify, including metadata and album art URLs.
+/// - Note: Album art is fetched asynchronously via `SpotifyImage` URLs.
 struct SpotifyTrack: Codable, Equatable {
-  let uri: String // Spotify URI for playback/actions
+  let uri: String // Unique Spotify identifier
   let name: String
   let artists: [SpotifyArtist]
-  let album: SpotifyAlbum // Contains cover art images
+  var album: SpotifyAlbum // Contains URLs for album art
 }
 
+// MARK: - SpotifyAlbum
+/// Contains album metadata, including cover art URLs.
 struct SpotifyAlbum: Codable, Equatable {
-  let images: [SpotifyImage]  // First image is typically largest cover art
+  var images: [SpotifyImage] // Ordered by size (largest first)
 }
 
+// MARK: - SpotifyArtist
+/// Represents an artist associated with a track.
 struct SpotifyArtist: Codable, Equatable {
-  let id: String
   let name: String
 }
 
+// MARK: - SpotifyImage
+/// Represents an image URL with optional dimensions.
 struct SpotifyImage: Codable, Equatable {
   let url: URL
-  let width: Int? // Optional for mock data/flexible API responses
+  let width: Int?
   let height: Int?
     
   init(url: URL, width: Int? = nil, height: Int? = nil) {

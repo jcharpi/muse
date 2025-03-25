@@ -1,49 +1,71 @@
 import Foundation
 
+// MARK: - MusicService Protocol
+/// Defines core music interaction capabilities required by the app
+/// - Note: Implementations should handle authentication state internally
 protocol MusicService {
+  /// Fetches authenticated user's profile
   func fetchCurrentUser() async throws -> User
+  
+  /// Retrieves nearby users with music sharing capabilities
   func fetchNearbyListeners() async throws -> [Listener]
+  
+  /// Shares a track with another user
+  /// - Parameters:
+  ///   - trackId: Spotify URI of track to share
+  ///   - userId: Recipient's user identifier
   func shareTrack(_ trackId: String, with userId: String) async throws
+  
+  /// Initiates playback of a specific track
+  /// - Parameter trackId: Spotify URI of track to play
   func playTrack(_ trackId: String) async throws
 }
 
-// Neutral implementation for unauthenticated states
+// MARK: - EmptyMusicService
+/// Neutral implementation for unauthenticated states
+/// - Provides default values to prevent nil states in UI components
 struct EmptyMusicService: MusicService {
-  // Default user prevents nil states in UI components
   func fetchCurrentUser() async throws -> User {
-    return User(
+    User(
       id: "empty-user",
       displayName: "Guest",
       images: [],
       listeningTo: nil
     )
   }
-    
-  // Silent service for inactive functionality
-  func fetchNearbyListeners() async throws -> [Listener] { [] }
-  func shareTrack(_ trackId: String, with userId: String) async throws {}
-  func playTrack(_ trackId: String) async throws {}
+  
+  func fetchNearbyListeners() async throws -> [Listener] {
+    TestData.testListeners
+  }
+  
+  func shareTrack(_ trackId: String, with userId: String) async throws {
+    // No-op for unauthenticated state
+  }
+  
+  func playTrack(_ trackId: String) async throws {
+    // No-op for unauthenticated state
+  }
 }
 
-// Development service with simulated network characteristics
+// MARK: - MockMusicService
+/// Development service with simulated network characteristics
+/// - Uses test data for previews and prototyping
 struct MockMusicService: MusicService {
   func fetchCurrentUser() async throws -> User {
-    return TestData.testUser
+    TestData.testUser
   }
-    
+  
   func fetchNearbyListeners() async throws -> [Listener] {
-    return TestData.testListeners
+    TestData.testListeners
   }
-    
-  // Network latency simulation with success outcomes
+  
   func shareTrack(_ trackId: String, with userId: String) async throws {
-    try await Task.sleep(nanoseconds: 300_000_000) // 300ms delay
+    try await Task.sleep(nanoseconds: 300_000_000) // Simulate network latency
     print("Mock: Shared track \(trackId) with user \(userId)")
   }
-    
-  // Playback initiation simulation
+  
   func playTrack(_ trackId: String) async throws {
-    try await Task.sleep(nanoseconds: 300_000_000)  // 300ms delay
+    try await Task.sleep(nanoseconds: 300_000_000)
     print("Mock: Playing track \(trackId)")
   }
 }

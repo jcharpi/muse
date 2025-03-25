@@ -1,63 +1,61 @@
 import SwiftUI
 
+// MARK: - ListenerModalView
+/// A modal sheet displaying detailed information about a selected nearby listener.
+/// - Shows music recommendations and sharing status.
 struct ListenerModalView: View {
+  // MARK: - Dependencies
   @Environment(MuseViewModel.self) private var viewModel
-    
+  
+  // MARK: - Body
   var body: some View {
-    // Check if a listener is selected; if not, display a fallback message.
     if let listener = viewModel.selectedListener {
-      VStack {
-        Spacer()
-                
-        // Display listener information without an interactive icon.
+      VStack(spacing: Constants.verticalSpacing) {
+        // Header Section
         ListenerView(listener)
-          .padding(
-            .top,
-            Constants.topPadding
-          )
+          .padding(.top, Constants.topPadding)
           .padding(.horizontal)
-                
-        Spacer()
-                
-        // Display music-related content for the selected listener.
+        
+        // Music Content
         MusicDisplayView(listener: listener)
-                
-        Spacer()
-
-        // Conditionally show a button or a confirmation message based on the listener's state.
-        if listener.buttonToShow != .shared {
-          ButtonView(listener, style: .text)
-            .frame(
-              minHeight: Constants.minHeight
-            )
-        } else {
-          Text("You sent \(listener.displayName) a recommendation!")
-            .foregroundStyle(.green)
-            .font(.footnote)
-            .fontWeight(.medium)
-            .frame(minHeight: Constants.minHeight)
+        
+        // Action Section
+        Group {
+          if listener.buttonToShow != .shared {
+            ButtonView(listener, style: .text)
+              .frame(minHeight: Constants.minHeight)
+          } else {
+            Text("You sent \(listener.displayName) a recommendation!")
+              .foregroundStyle(.green)
+              .font(.footnote)
+              .frame(minHeight: Constants.minHeight)
+          }
         }
-                
-        Spacer()
+        .padding(.bottom, Constants.bottomPadding)
       }
-      .padding()
+      .frame(maxHeight: .infinity)
     } else {
       Text("No listener selected")
     }
   }
-    
+  
+  // MARK: - Constants
   private struct Constants {
-    static let minHeight: CGFloat = 50.0 // Minimum height for button or text area.
-    static let topPadding: CGFloat = 8.0 // Top padding for the listener view.
+    static let minHeight: CGFloat = 50.0
+    static let topPadding: CGFloat = 8.0
+    static let verticalSpacing: CGFloat = 24.0
+    static let bottomPadding: CGFloat = 24.0
   }
 }
 
+// MARK: - Previews
 #Preview {
   let viewModel = MuseViewModel(
     model: MuseModel(musicService: MockMusicService())
   )
-  viewModel.selectedListener = TestData.testListeners.first
+  viewModel.selectedListener = TestData.testListeners[1]
     
   return ListenerModalView()
     .environment(viewModel)
+    .environmentObject(SpotifyController())
 }

@@ -1,58 +1,64 @@
 import SwiftUI
 
+// MARK: - ProfileIconView
+/// Displays a circular profile image with optional Spotify artwork.
+/// - Handles loading states and fallback UI.
 struct ProfileIconView: View {
-  // Holds an optional URL for fetching the profile image asynchronously.
+  // MARK: - Properties
   private let imageUrl: URL?
-  // Defines the overall dimensions, ensuring a uniform circular appearance.
   private let size: CGFloat
-    
-  /// Enables dependency injection for testing or custom configurations.
+  
+  // MARK: - Initialization
   init(imageUrl: URL?, size: CGFloat) {
     self.imageUrl = imageUrl
     self.size = size
   }
-    
+  
+  // MARK: - Body
   var body: some View {
     Group {
       if let imageUrl {
         AsyncImage(url: imageUrl) { phase in
-          if let image = phase.image {
-            // Successfully retrieved images are adjusted to fill the container.
-            image
-              .resizable()
-              .aspectRatio(contentMode: .fill)
-          } else if phase.error != nil {
-            // Fallback in case of a loading error maintains consistency.
-            Image(systemName: "person.circle.fill")
-              .resizable()
-          } else {
-            // Indicates an ongoing loading process.
-            ProgressView()
+          switch phase {
+          case .success(let image): loadedImage(image)
+          case .failure: fallbackImage
+          default: ProgressView()
           }
         }
       } else {
-        // Directly use a default placeholder if no URL is provided.
-        Image(systemName: "person.circle.fill")
-          .resizable()
+        fallbackImage
       }
     }
-    // Constrains the view to a square before applying a circular clip.
     .frame(width: size, height: size)
     .clipShape(Circle())
-    // Adds a border overlay to enhance visual definition.
-    .background(
-      Circle()
-        .stroke(lineWidth: Constants.lineWidth)
-        .foregroundStyle(Color.primary)
-    )
+    .background(circleBorder)
   }
-    
+  
+  // MARK: - Subviews
+  private func loadedImage(_ image: Image) -> some View {
+    image
+      .resizable()
+      .aspectRatio(contentMode: .fill)
+  }
+  
+  private var fallbackImage: some View {
+    Image(systemName: "person.circle.fill")
+      .resizable()
+  }
+  
+  private var circleBorder: some View {
+    Circle()
+      .stroke(lineWidth: Constants.lineWidth)
+      .foregroundStyle(Color.primary)
+  }
+  
+  // MARK: - Constants
   private struct Constants {
-    // Centralized constant for the border stroke width.
     static let lineWidth: CGFloat = 4.0
   }
 }
 
+// MARK: - Previews
 #Preview {
   VStack {
     // Simulates a typical user scenario with valid image data.

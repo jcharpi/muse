@@ -1,76 +1,62 @@
 import SwiftUI
 
-/// The main interface for the Muse app, managing tab navigation and sign-in flow.
+// MARK: - MuseHomeView
+/// Primary application interface with tabbed navigation for:
+/// - Current playback view
+/// - Nearby listener discovery
 struct MuseHomeView: View {
-  // Injects a view model from the environment to supply user data and business logic.
+  // MARK: - Dependencies
   @Environment(MuseViewModel.self) private var viewModel
-  
-  // Controls the display of the logout alert when interacting with the header.
-  @State private var showHeaderAlert = false
-  
-  // Flags whether the sign-in screen should be presented (typically after a logout).
-  @State private var showSignIn = false
+  @EnvironmentObject private var spotifyController: SpotifyController
 
+  // MARK: - State
+  @State private var showHeaderAlert = false // Controls disconnect confirmation dialog
+  @State private var showSignIn = false // Toggles full-screen sign-in overlay
+
+  // MARK: - Body
   var body: some View {
     TabView {
-      // Primary music playback interface.
       nowPlaying
-        .tabItem {
-          Label("Now Playing", systemImage: "play.fill")
-        }
+        .tabItem { Label("Now Playing", systemImage: "play.fill") }
       
-      // Interface for localized or interactive content.
       MuseNearbyView()
-        .tabItem {
-          Label("Nearby", systemImage: "wave.3.up")
-        }
+        .tabItem { Label("Nearby", systemImage: "wave.3.up") }
     }
-    .tint(
-      .primary
-    )
-    // Presents the sign-in screen as a full screen overlay when triggered.
+    .tint(.primary)
     .fullScreenCover(isPresented: $showSignIn) {
       SignInView(showSignIn: $showSignIn)
     }
   }
-    
-  // Encapsulates the components for the "Now Playing" section.
-  var nowPlaying: some View {
+
+  // MARK: - Subviews
+  /// Current user's playback interface with disconnect controls
+  private var nowPlaying: some View {
     VStack {
-      // Header component acts as a trigger for logout options.
-      Button {
-        showHeaderAlert = true
-      } label: {
-        HeaderView()
-      }
-      // Provides logout confirmation with an option to cancel.
-      .alert("Logout", isPresented: $showHeaderAlert) {
-        Button("Cancel", role: .cancel) { }
-        Button("Logout", role: .destructive) {
-          // Transition to sign-in after logout is confirmed.
-          showSignIn = true
+      // Profile header with disconnect capability
+      Button { showHeaderAlert = true } label: { HeaderView() }
+        .alert("Disconnect", isPresented: $showHeaderAlert) {
+          Button("Cancel", role: .cancel) { }
+          Button("Disconnect", role: .destructive) {
+            spotifyController.disconnect()
+            spotifyController.accessToken = nil
+            showSignIn = true // Trigger auth flow
+          }
         }
-      }
       
       Spacer()
-      // Displays current music information, driven by user data from the view model.
-      MusicDisplayView(user: viewModel.user)
+      MusicDisplayView(user: viewModel.user) // Current track visualization
       Spacer()
-      // Placeholder for additional media controls to be integrated.
       Spacer()
     }
   }
 }
 
-// SwiftUI preview setup using a mock model to simulate realistic app data.
+// MARK: - Previews
 #Preview {
   let model = MuseModel(musicService: MockMusicService())
-  model.setTestData(
-    user: TestData.testUser,
-    listeners: TestData.testListeners
-  )
-  let viewModel = MuseViewModel(model: model)
-    
+  model.setTestData(user: TestData.testUser, listeners: TestData.testListeners)
   return MuseHomeView()
-    .environment(viewModel)
+    .environment(MuseViewModel(model: model))  
+    .environmentObject(SpotifyController())
+
 }
