@@ -1,22 +1,16 @@
 import Foundation
 
 // MARK: - Listener
-/// Represents a nearby user who can share/receive music recommendations.
-/// Conforms to:
-/// - `SpotifyAccount`: Provides Spotify profile data.
-/// - `MusicDisplayable`: Allows display of current listening activity.
+/// A nearby user who can share and receive music recommendations.
 struct Listener: SpotifyAccount, MusicDisplayable {
-  // MARK: Properties
   let id: String
   let displayName: String
   let images: [SpotifyImage]
-  var listeningTo: SpotifyTrack? // Current playback track
-  var recommendedMe: SpotifyTrack? // Track recommended to the current user
-  var sentRecommendation: Bool // Flag if a recommendation was sent to this listener
-    
-  // MARK: Initialization
-  /// Public initializer for testing and SwiftUI previews.
-  public init(
+  var listeningTo: SpotifyTrack?
+  var recommendedMe: SpotifyTrack?
+  var sentRecommendation: Bool
+
+  init(
     id: String,
     displayName: String,
     images: [SpotifyImage],
@@ -31,16 +25,26 @@ struct Listener: SpotifyAccount, MusicDisplayable {
     self.recommendedMe = recommendedMe
     self.sentRecommendation = sentRecommendation
   }
-    
-  // MARK: Computed Properties
-  /// Determines which button type to display based on interaction state.
+
+  // MARK: - Computed Properties
+
+  /// Which action button to show based on interaction state.
   var buttonToShow: ButtonType {
-    if recommendedMe != nil {
-      return .listen
-    } else if sentRecommendation {
-      return .shared
-    } else {
-      return .share
-    }
+    if recommendedMe != nil { return .listen }
+    if sentRecommendation { return .shared }
+    return .share
+  }
+
+  /// Ordered track data for display (recommendation first, then now-playing).
+  var tracks: [(track: SpotifyTrack?, header: String)] {
+    var result: [(SpotifyTrack?, String)] = []
+    if let rec = recommendedMe { result.append((rec, "Recommended Song")) }
+    if let cur = listeningTo { result.append((cur, "Now Listening")) }
+    return result.isEmpty ? [(nil, "")] : result
+  }
+
+  /// True when both a recommendation and a now-playing track exist (triggers carousel).
+  var showsCarousel: Bool {
+    recommendedMe != nil && listeningTo != nil
   }
 }

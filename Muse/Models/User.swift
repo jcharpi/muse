@@ -1,16 +1,14 @@
 import Foundation
 
 // MARK: - User
-/// Represents the current application user, conforming to Spotify and music display protocols.
+/// The authenticated app user.
 struct User: SpotifyAccount, MusicDisplayable {
-  // MARK: Properties
   let id: String
   let displayName: String
   let images: [SpotifyImage]
-  var listeningTo: SpotifyTrack? // Current playback track
-    
-  // MARK: Initialization
-  public init(
+  var listeningTo: SpotifyTrack?
+
+  init(
     id: String,
     displayName: String,
     images: [SpotifyImage],
@@ -20,5 +18,10 @@ struct User: SpotifyAccount, MusicDisplayable {
     self.displayName = displayName
     self.images = images
     self.listeningTo = listeningTo
+  }
+
+  /// Header shown above the album art on the Now Playing tab.
+  var nowPlayingHeader: String {
+    listeningTo != nil ? "Now Playing" : ""
   }
 }
