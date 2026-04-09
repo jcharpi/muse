@@ -8,7 +8,7 @@ final class MuseModel {
   var user: User
   var listeners: [Listener]
 
-  init(musicService: MusicService = EmptyMusicService()) {
+  init(musicService: MusicService = MockMusicService()) {
     self.musicService = musicService
     self.listeners = []
     self.user = Self.defaultUser
@@ -45,8 +45,8 @@ final class MuseModel {
       guard let track = updated.recommendedMe else { throw MuseError.noRecommendedTrack }
       try await musicService.playTrack(track.uri)
       updated.recommendedMe = nil
-    default:
-      break
+    case .shared:
+      return
     }
     listeners[index] = updated
   }

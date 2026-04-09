@@ -47,19 +47,17 @@ class MuseViewModel {
 
   func buttonColors(for type: ButtonType) -> ButtonColor {
     switch type {
-    case .listen, .connect:       return (.green, .black)
-    case .disconnect, .share:     return (.pink, .white)
-    case .shared:                 return (.red, .white)
+    case .listen:  return (.green, .black)
+    case .share:   return (.pink, .white)
+    case .shared:  return (.red, .white)
     }
   }
 
   func buttonAssets(for type: ButtonType) -> ButtonAssets {
     switch type {
-    case .listen:      return ("Listen", "music.note")
-    case .connect:     return ("Connect", "door.left.hand.open")
-    case .disconnect:  return ("Disconnect", "door.right.hand.open")
-    case .share:       return ("Share", "bolt")
-    case .shared:      return ("Shared", "bolt.fill")
+    case .listen:  return ("Listen", "music.note")
+    case .share:   return ("Share", "bolt")
+    case .shared:  return ("Shared", "bolt.fill")
     }
   }
 
