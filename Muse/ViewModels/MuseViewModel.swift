@@ -25,10 +25,11 @@ class MuseViewModel {
   }
 
   // MARK: - Initialization
-  init(model: MuseModel = MuseModel()) {
-    self.model = model
-    self.user = model.user
-    self.listeners = model.listeners
+  init(model: MuseModel? = nil) {
+    let resolvedModel = model ?? MuseModel()
+    self.model = resolvedModel
+    self.user = resolvedModel.user
+    self.listeners = resolvedModel.listeners
     loadInitialData()
   }
 
