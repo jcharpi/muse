@@ -37,15 +37,11 @@ final class MuseModel {
     }
     var updated = listeners[index]
     switch type {
-    case .share:
-      guard let track = user.listeningTo else { throw MuseError.noTrackPlaying }
-      try await musicService.shareTrack(track.uri, with: updated.id)
-      updated.sentRecommendation = true
-    case .listen:
-      guard let track = updated.recommendedMe else { throw MuseError.noRecommendedTrack }
-      try await musicService.playTrack(track.uri)
-      updated.recommendedMe = nil
-    case .shared:
+    case .react:
+      try await musicService.sendReaction(to: updated.id)
+      updated.hasReacted = true
+      updated.reactionCount += 1
+    case .reacted:
       return
     }
     listeners[index] = updated
@@ -62,16 +58,12 @@ private extension MuseModel {
 // MARK: - MuseError
 enum MuseError: Error {
   case listenerNotFound
-  case noTrackPlaying
-  case noRecommendedTrack
   case apiError(String)
 
   var errorDescription: String? {
     switch self {
-    case .listenerNotFound:     return "Listener not found in current session"
-    case .noTrackPlaying:       return "No track currently playing"
-    case .noRecommendedTrack:   return "No recommended track available"
-    case .apiError(let msg):    return "API Error: \(msg)"
+    case .listenerNotFound: return "Listener not found in current session"
+    case .apiError(let msg): return "API Error: \(msg)"
     }
   }
 }

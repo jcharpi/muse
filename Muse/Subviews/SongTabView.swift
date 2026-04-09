@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Displays a single track: album art, title, and artist list.
-/// Handles three states: current track (SDK image), other tracks (URL image), no track (placeholder).
+/// Header is only rendered when headerTitle is non-empty.
 struct SongTabView: View {
   @EnvironmentObject private var spotifyController: SpotifyController
 
@@ -11,7 +11,7 @@ struct SongTabView: View {
   var body: some View {
     HStack {
       VStack(alignment: .leading) {
-        headerView
+        if !headerTitle.isEmpty { headerView }
         albumArtView
         if let track { trackInfoView(for: track) }
       }
@@ -70,17 +70,17 @@ struct SongTabView: View {
   }
 }
 
-#Preview("Current Track") {
-  SongTabView(track: TestData.testListeners[1].listeningTo, headerTitle: "Now Listening")
-    .environmentObject(SpotifyController())
-}
-
-#Preview("No Artwork") {
+#Preview("With Header") {
   SongTabView(track: TestData.testUser.listeningTo, headerTitle: "Now Playing")
     .environmentObject(SpotifyController())
 }
 
+#Preview("No Header") {
+  SongTabView(track: TestData.testListeners[0].listeningTo, headerTitle: "")
+    .environmentObject(SpotifyController())
+}
+
 #Preview("No Track") {
-  SongTabView(track: nil, headerTitle: "No Track Available")
+  SongTabView(track: nil, headerTitle: "")
     .environmentObject(SpotifyController())
 }

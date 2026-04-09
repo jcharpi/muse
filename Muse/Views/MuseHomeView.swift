@@ -29,6 +29,20 @@ struct MuseHomeView: View {
         }
 
       Spacer()
+
+      if viewModel.user.reactionCount > 0 {
+        HStack(spacing: 6) {
+          Image(systemName: "hand.thumbsup.fill")
+          Text("\(viewModel.user.reactionCount)")
+            .fontWeight(.semibold)
+        }
+        .font(.title3)
+        .foregroundStyle(.yellow)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(Capsule().fill(Color.yellow.opacity(0.15)))
+      }
+
       MusicDisplayView(user: viewModel.user)
       Spacer()
     }

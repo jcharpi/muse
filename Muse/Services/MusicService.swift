@@ -5,8 +5,7 @@ import Foundation
 protocol MusicService {
   func fetchCurrentUser() async throws -> User
   func fetchNearbyListeners() async throws -> [Listener]
-  func shareTrack(_ trackId: String, with userId: String) async throws
-  func playTrack(_ trackId: String) async throws
+  func sendReaction(to userId: String) async throws
 }
 
 // MARK: - EmptyMusicService
@@ -17,8 +16,7 @@ struct EmptyMusicService: MusicService {
   }
 
   func fetchNearbyListeners() async throws -> [Listener] { [] }
-  func shareTrack(_ trackId: String, with userId: String) async throws {}
-  func playTrack(_ trackId: String) async throws {}
+  func sendReaction(to userId: String) async throws {}
 }
 
 // MARK: - MockMusicService
@@ -27,13 +25,8 @@ struct MockMusicService: MusicService {
   func fetchCurrentUser() async throws -> User { TestData.testUser }
   func fetchNearbyListeners() async throws -> [Listener] { TestData.testListeners }
 
-  func shareTrack(_ trackId: String, with userId: String) async throws {
+  func sendReaction(to userId: String) async throws {
     try await Task.sleep(nanoseconds: 300_000_000)
-    print("Mock: Shared track \(trackId) with user \(userId)")
-  }
-
-  func playTrack(_ trackId: String) async throws {
-    try await Task.sleep(nanoseconds: 300_000_000)
-    print("Mock: Playing track \(trackId)")
+    print("Mock: Sent reaction to user \(userId)")
   }
 }

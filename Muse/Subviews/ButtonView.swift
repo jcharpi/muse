@@ -18,54 +18,82 @@ struct ButtonView: View {
 
     Group {
       switch style {
-      case .text: textButton(assets.title, colors)
       case .icon: iconButton(assets.icon, colors)
+      case .text: textButton(assets.icon, colors)
       }
     }
     .onTapGesture { viewModel.buttonTap(listener) }
   }
 
-  private func textButton(_ title: String, _ colors: MuseViewModel.ButtonColor) -> some View {
-    Text(title)
-      .font(.title2)
-      .fontWeight(.medium)
-      .foregroundStyle(colors.secondary ?? .black)
-      .padding(.vertical, 8)
-      .padding(.horizontal, 24)
-      .background(colors.primary)
-      .cornerRadius(20)
+  // MARK: - Icon Style (used in the Nearby list)
+  // Thumbs-up icon inside a circle, with a reaction count badge when count > 0.
+  private func iconButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
+    ZStack(alignment: .topTrailing) {
+      Image(systemName: icon)
+        .font(.title)
+        .fontWeight(.semibold)
+        .frame(width: 30, height: 30)
+        .scaledToFit()
+        .foregroundStyle(colors.primary)
+        .background(
+          Circle()
+            .stroke(lineWidth: 4)
+            .foregroundStyle(colors.primary)
+            .frame(width: 56, height: 56)
+        )
+        .padding(16)
+
+      if listener.reactionCount > 0 {
+        Text("\(listener.reactionCount)")
+          .font(.caption2)
+          .fontWeight(.bold)
+          .foregroundStyle(.white)
+          .padding(5)
+          .background(Circle().fill(.pink))
+          .offset(x: 2, y: 2)
+      }
+    }
   }
 
-  private func iconButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
-    Image(systemName: icon)
-      .font(.title)
-      .fontWeight(.semibold)
-      .frame(width: 30, height: 30)
-      .scaledToFit()
-      .foregroundStyle(colors.primary)
-      .background(
-        Circle()
-          .stroke(lineWidth: 4)
-          .foregroundStyle(colors.primary)
-          .frame(width: 56, height: 56)
-      )
-      .padding(16)
+  // MARK: - Text Style (used in the listener modal)
+  // SF Symbol + count number; highlighted in yellow when already reacted.
+  private func textButton(_ icon: String, _ colors: MuseViewModel.ButtonColor) -> some View {
+    let reacted = listener.buttonToShow == .reacted
+    return HStack(spacing: 8) {
+      Image(systemName: icon)
+      if listener.reactionCount > 0 {
+        Text("\(listener.reactionCount)")
+      }
+    }
+    .font(.title2)
+    .fontWeight(.medium)
+    .foregroundStyle(reacted ? .yellow : .primary)
+    .padding(.vertical, 10)
+    .padding(.horizontal, 28)
+    .background(
+      RoundedRectangle(cornerRadius: 20)
+        .fill(reacted ? Color.yellow.opacity(0.15) : Color.primary.opacity(0.08))
+    )
+    .overlay(
+      RoundedRectangle(cornerRadius: 20)
+        .stroke(reacted ? Color.yellow : Color.primary.opacity(0.3), lineWidth: 2)
+    )
   }
 }
 
 #Preview {
   let testListeners = TestData.testListeners
   return HStack {
-    VStack {
+    VStack(spacing: 20) {
+      ButtonView(testListeners[0], style: .icon)  // 2 reactions, not reacted
+      ButtonView(testListeners[1], style: .icon)  // 5 reactions, reacted
+      ButtonView(testListeners[2], style: .icon)  // 0 reactions
+    }
+    .padding()
+    VStack(spacing: 20) {
       ButtonView(testListeners[0], style: .text)
       ButtonView(testListeners[1], style: .text)
       ButtonView(testListeners[2], style: .text)
-    }
-    .padding()
-    VStack {
-      ButtonView(testListeners[0], style: .icon)
-      ButtonView(testListeners[1], style: .icon)
-      ButtonView(testListeners[2], style: .icon)
     }
     .padding()
   }

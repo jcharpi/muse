@@ -12,18 +12,9 @@ struct ListenerModalView: View {
 
         MusicDisplayView(listener: listener)
 
-        Group {
-          if listener.buttonToShow == .shared {
-            Text("You sent \(listener.displayName) a recommendation!")
-              .foregroundStyle(.green)
-              .font(.footnote)
-              .frame(minHeight: 50)
-          } else {
-            ButtonView(listener, style: .text)
-              .frame(minHeight: 50)
-          }
-        }
-        .padding(.bottom, 24)
+        ButtonView(listener, style: .text)
+          .frame(minHeight: 50)
+          .padding(.bottom, 24)
       }
       .frame(maxHeight: .infinity)
     }
@@ -31,6 +22,14 @@ struct ListenerModalView: View {
 }
 
 #Preview {
+  let viewModel = MuseViewModel(model: MuseModel(musicService: MockMusicService()))
+  viewModel.selectedListener = TestData.testListeners[0]
+  return ListenerModalView()
+    .environment(viewModel)
+    .environmentObject(SpotifyController())
+}
+
+#Preview("Already reacted") {
   let viewModel = MuseViewModel(model: MuseModel(musicService: MockMusicService()))
   viewModel.selectedListener = TestData.testListeners[1]
   return ListenerModalView()

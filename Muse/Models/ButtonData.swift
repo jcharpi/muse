@@ -2,12 +2,9 @@ import Foundation
 
 // MARK: - ButtonType
 enum ButtonType {
-  case listen, share, shared
+  case react, reacted
 
-  /// Status text shown beneath a listener's name in the list.
-  var statusText: String {
-    self == .listen ? "Recommended a song" : "Listening nearby"
-  }
+  var statusText: String { "Listening nearby" }
 }
 
 // MARK: - ButtonDisplayStyle

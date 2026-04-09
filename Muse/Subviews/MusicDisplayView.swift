@@ -15,21 +15,8 @@ struct MusicDisplayView: View {
 
   @ViewBuilder
   private func listenerContent(_ listener: Listener) -> some View {
-    if listener.showsCarousel {
-      TabView {
-        ForEach(listener.tracks, id: \.header) { track, header in
-          SongTabView(track: track, headerTitle: header)
-        }
-      }
-      .tabViewStyle(.page(indexDisplayMode: .never))
+    SongTabView(track: listener.listeningTo, headerTitle: "")
       .frame(maxHeight: 550)
-    } else {
-      SongTabView(
-        track: listener.tracks.first?.track,
-        headerTitle: listener.tracks.first?.header ?? ""
-      )
-      .frame(maxHeight: 550)
-    }
   }
 
   @ViewBuilder
@@ -43,15 +30,15 @@ struct MusicDisplayView: View {
   }
 }
 
-#Preview {
+#Preview("Listener with track") {
   let model = MuseModel(musicService: MockMusicService())
   model.setTestData(user: TestData.testUser, listeners: TestData.testListeners)
-  return MusicDisplayView(listener: TestData.testListeners[1])
+  return MusicDisplayView(listener: TestData.testListeners[0])
     .environment(MuseViewModel(model: model))
     .environmentObject(SpotifyController())
 }
 
-#Preview {
+#Preview("User now playing") {
   let model = MuseModel(musicService: MockMusicService())
   model.setTestData(user: TestData.testUser, listeners: TestData.testListeners)
   return MusicDisplayView(user: TestData.testUser)
