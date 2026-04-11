@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct MusicDisplayView: View {
+  enum DisplayTarget {
+    case listener(Listener)
+    case user(User)
+  }
+
   let displayTarget: DisplayTarget
 
   init(listener: Listener) { self.displayTarget = .listener(listener) }
@@ -15,18 +20,13 @@ struct MusicDisplayView: View {
 
   @ViewBuilder
   private func listenerContent(_ listener: Listener) -> some View {
-    SongTabView(track: listener.listeningTo, headerTitle: "")
+    TrackDetailView(track: listener.listeningTo, headerTitle: "")
       .frame(maxHeight: 550)
   }
 
   @ViewBuilder
   private func userContent(_ user: User) -> some View {
-    SongTabView(track: user.listeningTo, headerTitle: user.nowPlayingHeader)
-  }
-
-  enum DisplayTarget {
-    case listener(Listener)
-    case user(User)
+    TrackDetailView(track: user.listeningTo, headerTitle: user.nowPlayingHeader)
   }
 }
 

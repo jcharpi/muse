@@ -21,7 +21,7 @@ struct SignInView: View {
         .fontWeight(.bold)
         .multilineTextAlignment(.center)
 
-      Text("Sign in with Spotify to explore and share what you're listening to with those nearby.")
+      Text("Sign in with Spotify to see what people nearby are listening to.")
         .font(.body)
         .foregroundStyle(.secondary)
         .multilineTextAlignment(.center)
@@ -39,8 +39,8 @@ struct SignInView: View {
       .padding(.vertical, 12)
       .padding(.horizontal, 24)
       .background(.green)
-      .foregroundColor(.black)
-      .cornerRadius(20)
+      .foregroundStyle(.black)
+      .clipShape(RoundedRectangle(cornerRadius: 20))
     }
   }
 }

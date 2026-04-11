@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Displays a single track: album art, title, and artist list.
 /// Header is only rendered when headerTitle is non-empty.
-struct SongTabView: View {
+struct TrackDetailView: View {
   @EnvironmentObject private var spotifyController: SpotifyController
 
   let track: SpotifyTrack?
@@ -33,11 +33,11 @@ struct SongTabView: View {
          let image = spotifyController.currentTrackImage {
         Image(uiImage: image)
           .resizable()
-          .scaledToFit()
+          .scaledToFill()
       } else {
         AsyncImage(url: track?.album.images.first?.url) { phase in
           if case .success(let image) = phase {
-            image.resizable().scaledToFit()
+            image.resizable().scaledToFill()
           } else {
             fallbackAlbumArt
           }
@@ -45,8 +45,8 @@ struct SongTabView: View {
       }
     }
     .aspectRatio(1, contentMode: .fit)
-    .frame(maxWidth: .infinity)
-    .overlay(Rectangle().stroke(Color.primary, lineWidth: 2))
+    .clipShape(RoundedRectangle(cornerRadius: 12))
+    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.primary, lineWidth: 2))
   }
 
   private var fallbackAlbumArt: some View {
@@ -71,16 +71,16 @@ struct SongTabView: View {
 }
 
 #Preview("With Header") {
-  SongTabView(track: TestData.testUser.listeningTo, headerTitle: "Now Playing")
+  TrackDetailView(track: TestData.testUser.listeningTo, headerTitle: "Now Playing")
     .environmentObject(SpotifyController())
 }
 
 #Preview("No Header") {
-  SongTabView(track: TestData.testListeners[0].listeningTo, headerTitle: "")
+  TrackDetailView(track: TestData.testListeners[0].listeningTo, headerTitle: "")
     .environmentObject(SpotifyController())
 }
 
 #Preview("No Track") {
-  SongTabView(track: nil, headerTitle: "")
+  TrackDetailView(track: nil, headerTitle: "")
     .environmentObject(SpotifyController())
 }

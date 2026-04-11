@@ -12,13 +12,15 @@ struct ListenerView: View {
       ProfileIconView(imageUrl: listener.images.first?.url, size: 56)
         .padding(.trailing, 4)
 
-      VStack(alignment: .leading, spacing: 8) {
+      VStack(alignment: .leading, spacing: 4) {
         Text(listener.displayName)
           .font(.title2)
-        Text(listener.buttonToShow.statusText)
+          .fontWeight(.semibold)
+        Text(listener.listeningTo.map { "\($0.name) — \($0.artists.map(\.name).joined(separator: ", "))" } ?? "Not playing")
           .font(.subheadline)
+          .foregroundStyle(.secondary)
+          .lineLimit(1)
       }
-      .fontWeight(.semibold)
 
       Spacer()
     }
@@ -27,14 +29,10 @@ struct ListenerView: View {
 }
 
 #Preview {
-  let model = MuseModel(musicService: MockMusicService())
-  model.setTestData(user: TestData.testUser, listeners: TestData.testListeners)
-
-  return VStack(spacing: 16) {
+  VStack(spacing: 16) {
     ForEach(TestData.testListeners) { listener in
       ListenerView(listener)
     }
   }
   .padding()
-  .environment(MuseViewModel(model: model))
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - MuseModel
-/// Central data model — fetches user/listener data and handles button actions.
+/// Central data model — fetches user/listener data from the music service.
 @MainActor
 final class MuseModel {
   private let musicService: MusicService
@@ -20,33 +20,22 @@ final class MuseModel {
     user.listeningTo = track
   }
 
-  func setTestData(user: User, listeners: [Listener]) {
-    self.user = user
-    self.listeners = listeners
-  }
-
   func loadData() async throws {
     async let fetchedUser = musicService.fetchCurrentUser()
     async let fetchedListeners = musicService.fetchNearbyListeners()
     (self.user, self.listeners) = try await (fetchedUser, fetchedListeners)
   }
+}
 
-  func handleButtonAction(for listener: Listener, type: ButtonType) async throws {
-    guard let index = listeners.firstIndex(where: { $0.id == listener.id }) else {
-      throw MuseError.listenerNotFound
-    }
-    var updated = listeners[index]
-    switch type {
-    case .react:
-      try await musicService.sendReaction(to: updated.id)
-      updated.hasReacted = true
-      updated.reactionCount += 1
-    case .reacted:
-      return
-    }
-    listeners[index] = updated
+// MARK: - Debug Helpers
+#if DEBUG
+extension MuseModel {
+  func setTestData(user: User, listeners: [Listener]) {
+    self.user = user
+    self.listeners = listeners
   }
 }
+#endif
 
 // MARK: - Private Helpers
 private extension MuseModel {
@@ -56,14 +45,15 @@ private extension MuseModel {
 }
 
 // MARK: - MuseError
-enum MuseError: Error {
-  case listenerNotFound
+// NOTE: currently unused — kept as scaffolding for MultipeerConnectivity error handling
+enum MuseError: LocalizedError {
   case apiError(String)
+  case listenerNotFound
 
   var errorDescription: String? {
     switch self {
-    case .listenerNotFound: return "Listener not found in current session"
-    case .apiError(let msg): return "API Error: \(msg)"
+    case .apiError(let message):     return "API Error: \(message)"
+    case .listenerNotFound:          return "Listener not found in current session"
     }
   }
 }

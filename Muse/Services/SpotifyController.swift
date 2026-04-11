@@ -8,6 +8,7 @@ import Combine
 final class SpotifyController: NSObject, ObservableObject {
 
   // MARK: - Configuration
+  // NOTE: consider extracting credentials to a config file or Info.plist
   private let spotifyClientID = "05de78e3bdfb459983d1e6c548358be7"
   private let spotifyRedirectURL = URL(string: "spotify-ios-quick-start://spotify-login-callback")!
 
@@ -17,8 +18,8 @@ final class SpotifyController: NSObject, ObservableObject {
   )
 
   // MARK: - Published State
-  @Published var currentTrack: SpotifyTrack?
   @Published var accessToken: String?
+  @Published var currentTrack: SpotifyTrack?
   @Published var currentTrackImage: UIImage?
 
   // MARK: - Private
@@ -28,8 +29,8 @@ final class SpotifyController: NSObject, ObservableObject {
     return remote
   }()
 
-  private var currentAlbumId = ""
   private var cancellables = Set<AnyCancellable>()
+  private var currentAlbumId = ""
 
   override init() {
     super.init()
@@ -53,6 +54,11 @@ extension SpotifyController {
   func disconnect() {
     guard appRemote.isConnected else { return }
     appRemote.disconnect()
+  }
+
+  func signOut() {
+    disconnect()
+    accessToken = nil
   }
 
   private func setupAppStateObservers() {
@@ -140,6 +146,39 @@ extension SpotifyController: SPTAppRemoteDelegate {
   private func setupPlayerStateSubscription() {
     appRemote.playerAPI?.delegate = self
     appRemote.playerAPI?.subscribe(toPlayerState: { _, _ in })
+  }
+}
+
+// MARK: - Playback Control
+extension SpotifyController {
+  func playTrack(uri: String, completion: ((Error?) -> Void)? = nil) {
+    guard appRemote.isConnected else {
+      completion?(SpotifyError.notConnected)
+      return
+    }
+    appRemote.playerAPI?.play(uri, asRadio: false) { _, error in
+      completion?(error)
+    }
+  }
+
+  func queueTrack(uri: String, completion: ((Error?) -> Void)? = nil) {
+    guard appRemote.isConnected else {
+      completion?(SpotifyError.notConnected)
+      return
+    }
+    appRemote.playerAPI?.enqueueTrackUri(uri) { _, error in
+      completion?(error)
+    }
+  }
+
+  enum SpotifyError: LocalizedError {
+    case notConnected
+
+    var errorDescription: String? {
+      switch self {
+      case .notConnected: return "Spotify is not connected"
+      }
+    }
   }
 }
 

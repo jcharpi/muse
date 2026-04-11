@@ -1,17 +1,13 @@
 import Foundation
 
-// MARK: - SpotifyAccount
-/// Defines properties required for a Spotify user account.
-/// - Conforming Types: `User`, `Listener`
+/// Shared shape for Spotify user accounts (User and Listener).
 protocol SpotifyAccount: Codable, Equatable, Identifiable {
   var displayName: String { get }
-  var images: [SpotifyImage] { get }
   var id: String { get }
+  var images: [SpotifyImage] { get }
 }
 
-// MARK: - MusicDisplayable
-/// Indicates an entity can display current music playback.
-/// - Conforming Types: `User`, `Listener`
+/// An entity whose current music playback can be displayed.
 protocol MusicDisplayable {
   var listeningTo: SpotifyTrack? { get }
 }

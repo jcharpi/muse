@@ -7,22 +7,21 @@ import Combine
 @Observable
 class MuseViewModel {
 
-  // MARK: - Type Aliases
-  typealias ButtonColor = (primary: Color, secondary: Color?)
-  typealias ButtonAssets = (title: String, icon: String)
-
   // MARK: - Properties
-  var selectedListener: Listener?
 
-  private var model: MuseModel
+  // Public
+  var selectedListener: Listener?
+  var errorMessage: String?
+  var toastMessage: String?
+  var spotifyController: SpotifyController? { didSet { setupSpotifyObservers() } }
+
+  // Read-only externally
   private(set) var listeners: [Listener] = []
   private(set) var user: User
 
+  // Private
   private var cancellables = Set<AnyCancellable>()
-
-  var spotifyController: SpotifyController? {
-    didSet { setupSpotifyObservers() }
-  }
+  private var model: MuseModel
 
   // MARK: - Initialization
   init(model: MuseModel? = nil) {
@@ -33,30 +32,32 @@ class MuseViewModel {
     loadInitialData()
   }
 
-  // MARK: - Button Handling
+  // MARK: - Playback Actions
 
-  func buttonTap(_ listener: Listener) {
-    Task {
-      do {
-        try await model.handleButtonAction(for: listener, type: listener.buttonToShow)
-        refreshState()
-      } catch {
-        handleButtonActionError(error)
+  func playTrack(for listener: Listener) {
+    guard let track = listener.listeningTo else { return }
+    spotifyController?.playTrack(uri: track.uri) { [weak self] error in
+      Task { @MainActor in
+        if let error {
+          self?.errorMessage = "Could not play: \(error.localizedDescription)"
+        } else {
+          self?.toastMessage = "Now playing: \(track.name)"
+        }
       }
     }
   }
 
-  func buttonColors(for type: ButtonType) -> ButtonColor {
-    switch type {
-    case .react:    return (.primary, nil)
-    case .reacted:  return (.yellow, nil)
-    }
-  }
-
-  func buttonAssets(for type: ButtonType) -> ButtonAssets {
-    switch type {
-    case .react:    return ("React", "hand.thumbsup")
-    case .reacted:  return ("Reacted", "hand.thumbsup.fill")
+  func queueTrack(for listener: Listener) {
+    guard let track = listener.listeningTo else { return }
+    spotifyController?.queueTrack(uri: track.uri) { [weak self] error in
+      Task { @MainActor in
+        if let error {
+          self?.errorMessage = "Could not queue: \(error.localizedDescription)"
+        } else {
+          self?.toastMessage = "Queued: \(track.name)"
+          // TODO: send push notification to listener that someone queued their song
+        }
+      }
     }
   }
 
@@ -68,7 +69,7 @@ class MuseViewModel {
         try await model.loadData()
         refreshState()
       } catch {
-        print("Data loading error: \(error.localizedDescription)")
+        errorMessage = error.localizedDescription
       }
     }
   }
@@ -77,10 +78,6 @@ class MuseViewModel {
     listeners = model.listeners
     user = model.user
     selectedListener = listeners.first { $0.id == selectedListener?.id }
-  }
-
-  private func handleButtonActionError(_ error: Error) {
-    print("Button action failed: \(error.localizedDescription)")
   }
 }
 

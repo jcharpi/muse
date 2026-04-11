@@ -7,46 +7,105 @@ struct MuseHomeView: View {
   @State private var showDisconnectAlert = false
 
   var body: some View {
-    TabView {
-      nowPlaying
-        .tabItem { Label("Now Playing", systemImage: "play.fill") }
+    @Bindable var vm = viewModel
+    NavigationStack {
+      List {
+        // MARK: - Now Playing Section
+        Section {
+          Button { showDisconnectAlert = true } label: { HeaderView() }
+            .alert("Disconnect", isPresented: $showDisconnectAlert) {
+              Button("Cancel", role: .cancel) {}
+              Button("Disconnect", role: .destructive) {
+                spotifyController.signOut()
+              }
+            }
 
-      MuseNearbyView()
-        .tabItem { Label("Nearby", systemImage: "wave.3.up") }
+          MusicDisplayView(user: viewModel.user)
+            .frame(maxHeight: 350)
+        }
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+
+        // MARK: - Nearby Listeners Section
+        Section {
+          ForEach(vm.listeners) { listener in
+            ListenerView(listener)
+              .onTapGesture { viewModel.selectedListener = listener }
+              .swipeActions(edge: .trailing) {
+                if listener.listeningTo != nil {
+                  Button {
+                    viewModel.playTrack(for: listener)
+                  } label: {
+                    Label("Play", systemImage: "play.fill")
+                  }
+                  .tint(.green)
+                }
+              }
+              .swipeActions(edge: .leading) {
+                if listener.listeningTo != nil {
+                  Button {
+                    viewModel.queueTrack(for: listener)
+                  } label: {
+                    Label("Queue", systemImage: "text.badge.plus")
+                  }
+                  .tint(Color.queueAction)
+                }
+              }
+          }
+          .listRowSeparator(.hidden)
+          .listRowBackground(Color.clear)
+        } header: {
+          Text("Nearby")
+            .font(.title2)
+            .fontWeight(.bold)
+            .foregroundStyle(.primary)
+            .textCase(nil)
+        }
+      }
+      .listStyle(.plain)
+      .sheet(item: $vm.selectedListener) { _ in
+        ListenerModalView()
+          .environment(viewModel)
+          .presentationDragIndicator(.hidden)
+      }
     }
-    .tint(.primary)
+    .overlay(alignment: .bottom) { toastOverlay }
+    .alert("Something went wrong", isPresented: Binding(
+      get: { vm.errorMessage != nil },
+      set: { if !$0 { vm.errorMessage = nil } }
+    )) {
+      Button("OK", role: .cancel) { viewModel.errorMessage = nil }
+    } message: {
+      Text(viewModel.errorMessage ?? "")
+    }
   }
 
-  private var nowPlaying: some View {
-    VStack {
-      Button { showDisconnectAlert = true } label: { HeaderView() }
-        .alert("Disconnect", isPresented: $showDisconnectAlert) {
-          Button("Cancel", role: .cancel) {}
-          Button("Disconnect", role: .destructive) {
-            spotifyController.disconnect()
-            spotifyController.accessToken = nil
+  // MARK: - Toast Overlay
+  @ViewBuilder
+  private var toastOverlay: some View {
+    if let toast = viewModel.toastMessage {
+      Text(toast)
+        .font(.subheadline)
+        .fontWeight(.medium)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+        .background(Capsule().fill(.ultraThinMaterial))
+        .padding(.bottom, 24)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .onAppear {
+          DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation { viewModel.toastMessage = nil }
           }
         }
-
-      Spacer()
-
-      if viewModel.user.reactionCount > 0 {
-        HStack(spacing: 6) {
-          Image(systemName: "hand.thumbsup.fill")
-          Text("\(viewModel.user.reactionCount)")
-            .fontWeight(.semibold)
-        }
-        .font(.title3)
-        .foregroundStyle(.yellow)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Capsule().fill(Color.yellow.opacity(0.15)))
-      }
-
-      MusicDisplayView(user: viewModel.user)
-      Spacer()
     }
   }
+}
+
+// MARK: - App Colors
+extension Color {
+  /// #B91D6F — used for queue swipe action
+  static let queueAction = Color(red: 0.73, green: 0.11, blue: 0.44)
 }
 
 #Preview {
