@@ -17,6 +17,10 @@
 			</array>
 		</dict>
 	</array>
+  <key>SpotifyClientID</key>
+  <string>05de78e3bdfb459983d1e6c548358be7</string>
+  <key>SpotifyRedirectURL</key>
+  <string>spotify-ios-quick-start://spotify-login-callback</string>
   <key>NSAppTransportSecurity</key>
   <dict>
       <key>NSAllowsArbitraryLoads</key>

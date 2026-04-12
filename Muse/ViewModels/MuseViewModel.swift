@@ -1,6 +1,12 @@
 import SwiftUI
 import Combine
 
+// MARK: - Toast
+struct Toast: Equatable {
+  let message: String
+  let color: Color
+}
+
 // MARK: - MuseViewModel
 /// Coordinates data flow between the model layer and the view layer.
 @MainActor
@@ -12,7 +18,7 @@ class MuseViewModel {
   // Public
   var selectedListener: Listener?
   var errorMessage: String?
-  var toastMessage: String?
+  var toast: Toast?
   var spotifyController: SpotifyController? { didSet { setupSpotifyObservers() } }
 
   // Read-only externally
@@ -41,7 +47,7 @@ class MuseViewModel {
         if let error {
           self?.errorMessage = "Could not play: \(error.localizedDescription)"
         } else {
-          self?.toastMessage = "Now playing: \(track.name)"
+          self?.showToast(Toast(message: "Now playing: \(track.name)", color: .appGreen))
         }
       }
     }
@@ -54,7 +60,7 @@ class MuseViewModel {
         if let error {
           self?.errorMessage = "Could not queue: \(error.localizedDescription)"
         } else {
-          self?.toastMessage = "Queued: \(track.name)"
+          self?.showToast(Toast(message: "Queued: \(track.name)", color: .appMagenta))
           // TODO: send push notification to listener that someone queued their song
         }
       }
@@ -71,6 +77,14 @@ class MuseViewModel {
       } catch {
         errorMessage = error.localizedDescription
       }
+    }
+  }
+
+  private func showToast(_ newToast: Toast) {
+    toast = newToast
+    Task {
+      try? await Task.sleep(for: .seconds(1.5))
+      withAnimation { toast = nil }
     }
   }
 

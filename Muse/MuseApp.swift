@@ -23,6 +23,7 @@ struct MuseApp: App {
       .onAppear {
         viewModel.spotifyController = spotifyController
       }
+      .preferredColorScheme(.dark)
     }
   }
 }

@@ -8,9 +8,20 @@ import Combine
 final class SpotifyController: NSObject, ObservableObject {
 
   // MARK: - Configuration
-  // NOTE: consider extracting credentials to a config file or Info.plist
-  private let spotifyClientID = "05de78e3bdfb459983d1e6c548358be7"
-  private let spotifyRedirectURL = URL(string: "spotify-ios-quick-start://spotify-login-callback")!
+  private let spotifyClientID: String = {
+    guard let id = Bundle.main.object(forInfoDictionaryKey: "SpotifyClientID") as? String else {
+      fatalError("SpotifyClientID missing from Info.plist")
+    }
+    return id
+  }()
+
+  private let spotifyRedirectURL: URL = {
+    guard let raw = Bundle.main.object(forInfoDictionaryKey: "SpotifyRedirectURL") as? String,
+          let url = URL(string: raw) else {
+      fatalError("SpotifyRedirectURL missing or invalid in Info.plist")
+    }
+    return url
+  }()
 
   private lazy var configuration = SPTConfiguration(
     clientID: spotifyClientID,

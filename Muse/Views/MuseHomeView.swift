@@ -39,7 +39,7 @@ struct MuseHomeView: View {
                   } label: {
                     Label("Play", systemImage: "play.fill")
                   }
-                  .tint(.green)
+                  .tint(.appGreen)
                 }
               }
               .swipeActions(edge: .leading) {
@@ -49,7 +49,7 @@ struct MuseHomeView: View {
                   } label: {
                     Label("Queue", systemImage: "text.badge.plus")
                   }
-                  .tint(Color.queueAction)
+                  .tint(.appMagenta)
                 }
               }
           }
@@ -59,11 +59,14 @@ struct MuseHomeView: View {
           Text("Nearby")
             .font(.title2)
             .fontWeight(.bold)
+            .tint(Color.white)
             .foregroundStyle(.primary)
             .textCase(nil)
         }
       }
       .listStyle(.plain)
+      .scrollContentBackground(.hidden)
+      .background(Color.appBackground)
       .sheet(item: $vm.selectedListener) { _ in
         ListenerModalView()
           .environment(viewModel)
@@ -71,6 +74,7 @@ struct MuseHomeView: View {
       }
     }
     .overlay(alignment: .bottom) { toastOverlay }
+    .animation(.easeInOut(duration: 0.3), value: viewModel.toast == nil)
     .alert("Something went wrong", isPresented: Binding(
       get: { vm.errorMessage != nil },
       set: { if !$0 { vm.errorMessage = nil } }
@@ -84,28 +88,25 @@ struct MuseHomeView: View {
   // MARK: - Toast Overlay
   @ViewBuilder
   private var toastOverlay: some View {
-    if let toast = viewModel.toastMessage {
-      Text(toast)
+    if let toast = viewModel.toast {
+      Text(toast.message)
         .font(.subheadline)
         .fontWeight(.medium)
+        .foregroundStyle(.white)
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
-        .background(Capsule().fill(.ultraThinMaterial))
+        .background(Capsule().fill(toast.color))
         .padding(.bottom, 24)
         .transition(.move(edge: .bottom).combined(with: .opacity))
-        .onAppear {
-          DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            withAnimation { viewModel.toastMessage = nil }
-          }
-        }
     }
   }
 }
 
 // MARK: - App Colors
 extension Color {
-  /// #B91D6F — used for queue swipe action
-  static let queueAction = Color(red: 0.73, green: 0.11, blue: 0.44)
+  static let appBackground = Color(red: 30/255,  green: 30/255,  blue: 30/255)   // #1E1E1E
+  static let appGreen      = Color(red: 29/255,  green: 185/255, blue: 84/255)   // #1DB954
+  static let appMagenta    = Color(red: 185/255, green: 29/255,  blue: 111/255)  // #B91D6F
 }
 
 #Preview {

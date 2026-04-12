@@ -8,10 +8,12 @@ struct TestData {
     displayName: "Test User",
     images: [SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228")!)],
     listeningTo: SpotifyTrack(
-      uri: "spotify:track:mock123",
-      name: "Sample Track",
-      artists: [SpotifyArtist(name: "Sample Artist")],
-      album: SpotifyAlbum(images: [])
+      uri: "spotify:track:0VjIjW4GlUZAMYd2vXMi3b",
+      name: "Blinding Lights",
+      artists: [SpotifyArtist(name: "The Weeknd")],
+      album: SpotifyAlbum(images: [
+        SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e028863bc11d2aa12b54f5aeb36")!)
+      ])
     )
   )
 
@@ -21,11 +23,11 @@ struct TestData {
       displayName: "Listener One",
       images: [SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock1",
-        name: "Sample Listening",
-        artists: [SpotifyArtist(name: "Sample Artist")],
+        uri: "spotify:track:2qSkIjg1o9h3YT9RAgYN75",
+        name: "Espresso",
+        artists: [SpotifyArtist(name: "Sabrina Carpenter")],
         album: SpotifyAlbum(images: [
-          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228")!)
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e02659cd4673230913b3918e0d5")!)
         ])
       )
     ),
@@ -34,10 +36,12 @@ struct TestData {
       displayName: "Listener Two",
       images: [SpotifyImage(url: URL(string: "https://example.com/user2.jpg")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock2",
-        name: "Another Track",
-        artists: [SpotifyArtist(name: "Artist Two")],
-        album: SpotifyAlbum(images: [])
+        uri: "spotify:track:6AI3ezQ4o3HUoP6Dhudph3",
+        name: "Not Like Us",
+        artists: [SpotifyArtist(name: "Kendrick Lamar")],
+        album: SpotifyAlbum(images: [
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e021ea0c62b2339cbf493a999ad")!)
+        ])
       )
     ),
     Listener(
@@ -45,10 +49,12 @@ struct TestData {
       displayName: "Listener Three",
       images: [SpotifyImage(url: URL(string: "https://example.com/user3.jpg")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock3",
-        name: "Blinding Lights",
-        artists: [SpotifyArtist(name: "The Weeknd")],
-        album: SpotifyAlbum(images: [])
+        uri: "spotify:track:2plbrEY59IikOBgBGLjaoe",
+        name: "Die With A Smile",
+        artists: [SpotifyArtist(name: "Lady Gaga"), SpotifyArtist(name: "Bruno Mars")],
+        album: SpotifyAlbum(images: [
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e0282ea2e9e1858aa012c57cd45")!)
+        ])
       )
     ),
     Listener(
@@ -56,10 +62,12 @@ struct TestData {
       displayName: "Listener Four",
       images: [SpotifyImage(url: URL(string: "https://example.com/user4.jpg")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock4",
-        name: "Espresso",
-        artists: [SpotifyArtist(name: "Sabrina Carpenter")],
-        album: SpotifyAlbum(images: [])
+        uri: "spotify:track:5vNRhkKd0yEAg8suGBpjeY",
+        name: "APT.",
+        artists: [SpotifyArtist(name: "ROSÉ"), SpotifyArtist(name: "Bruno Mars")],
+        album: SpotifyAlbum(images: [
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e0246085aa1855bd888abc51a5a")!)
+        ])
       )
     ),
     Listener(
@@ -67,10 +75,12 @@ struct TestData {
       displayName: "Listener Five",
       images: [SpotifyImage(url: URL(string: "https://example.com/user5.jpg")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock5",
-        name: "Not Like Us",
-        artists: [SpotifyArtist(name: "Kendrick Lamar")],
-        album: SpotifyAlbum(images: [])
+        uri: "spotify:track:6dOtVTDdiauQNBQEDOtlAB",
+        name: "BIRDS OF A FEATHER",
+        artists: [SpotifyArtist(name: "Billie Eilish")],
+        album: SpotifyAlbum(images: [
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e0271d62ea7ea8a5be92d3c1f62")!)
+        ])
       )
     ),
     Listener(
@@ -78,10 +88,12 @@ struct TestData {
       displayName: "Listener Six",
       images: [SpotifyImage(url: URL(string: "https://example.com/user6.jpg")!)],
       listeningTo: SpotifyTrack(
-        uri: "spotify:track:mock6",
-        name: "Die With A Smile",
-        artists: [SpotifyArtist(name: "Lady Gaga"), SpotifyArtist(name: "Bruno Mars")],
-        album: SpotifyAlbum(images: [])
+        uri: "spotify:track:0VjIjW4GlUZAMYd2vXMi3b",
+        name: "Blinding Lights",
+        artists: [SpotifyArtist(name: "The Weeknd")],
+        album: SpotifyAlbum(images: [
+          SpotifyImage(url: URL(string: "https://i.scdn.co/image/ab67616d00001e028863bc11d2aa12b54f5aeb36")!)
+        ])
       )
     )
   ]

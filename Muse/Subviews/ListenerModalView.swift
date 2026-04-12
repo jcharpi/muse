@@ -22,13 +22,14 @@ struct ListenerModalView: View {
               .fontWeight(.medium)
               .padding(.vertical, 10)
               .padding(.horizontal, 24)
-              .background(RoundedRectangle(cornerRadius: 20).fill(.green))
+              .background(RoundedRectangle(cornerRadius: 20).fill(Color.appGreen))
               .foregroundStyle(.black)
           }
           .padding(.bottom, 24)
         }
       }
-      .frame(maxHeight: .infinity)
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(Color.appBackground.ignoresSafeArea())
     }
   }
 }

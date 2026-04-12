@@ -12,6 +12,8 @@ struct SignInView: View {
       Spacer()
     }
     .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.appBackground.ignoresSafeArea())
   }
 
   private var featureDescription: some View {
@@ -38,7 +40,7 @@ struct SignInView: View {
       .fontWeight(.medium)
       .padding(.vertical, 12)
       .padding(.horizontal, 24)
-      .background(.green)
+      .background(Color.appGreen)
       .foregroundStyle(.black)
       .clipShape(RoundedRectangle(cornerRadius: 20))
     }
